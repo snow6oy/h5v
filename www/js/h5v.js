@@ -7,10 +7,15 @@ var vids, id;
 var h5vTags=["source","title","artist","album","rating","trackNumber","producer","genre"];
 
 $(document).ready(
-  /* after button is clicked fetch the playlist */
+  /* after search button is clicked fetch the playlist */
   $('.button').click(function(){
+    var url='/playlists/';
+    if($('.query').val()){
+      url+='search?text='+ $('.query').val();
+    }
+    console.log("url "+ url);    
     $.ajax({
-      url:"/playlists/",
+      url:url,
       dataType:"text",
       success:function(data){
         var json=$.parseJSON(data);
@@ -29,6 +34,7 @@ $(document).ready(
       }
     });
   }),
+  /* after update button then submit the form */
   $("#h5v").submit(function(e){
     var json={};
     /* copy the user-entered form data */ 

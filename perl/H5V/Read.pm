@@ -5,21 +5,21 @@ use File::Find;
 use File::Basename;
 use Image::ExifTool;
 use constant CONF=>{
-  DOC_ROOT=>'/opt/git/h5v/www/video',  # media source. provided at runtime as ->new(/path/to/video)
-  DONE_DIR=>'/opt/git/h5v/done',       # contains symlinks that map old to new filenames
-  SERVICE_URL=>'http://h5v.fnarg.net', # combination of DOCROOT and IP
-  HOME_DIR=>'/opt/git/h5v/perl'        # working dir
+  SERVICE_URL=>'http://h5v.fnarg.net', # web root
+  HOME_DIR=>'/opt/git/h5v'             # working dir
 };
 # hypermedia controls
 my %m=(
- addControl=>{id=>'add', rel=>'add', name=>'links', url=>'/playlists/', action=>'append', model=>'text={text}'},
- filterControl=>{id=>'search', rel=>'search', name=>'links', url=>'/playlists/search', action=>'read', model=>'?text={text}'},
+ addControl=>{id=>'add', rel=>'add', name=>'links', url=>'/playlists/', action=>'append', model=>'term={text}'},
+ filterControl=>{id=>'search', rel=>'search', name=>'links', url=>'/playlists/search', action=>'read', model=>'?term={text}'},
  listControl=>{id=>'list', rel=>'collection', name=>'links', url=>'/playlists/', action=>'read'},
  posterControl=>{id=>'poster', rel=>'icon', url=>'http://'. CONF->{SERVICE_URL}. '/images/html5_poster.jpg', action=>'read'},
 );
 # global vars required by File::Find
 my $candidate;
 my $success;
+# custom tags stored in media file
+my @h5vTags=qw(Title Producer Artist Rating Album Genre TrackNumber);
 # @request
 #   new(dirName)            read files OR die
 sub new{
@@ -40,11 +40,39 @@ sub load_anyten{
     $data->{Source}=CONF->{SERVICE_URL}. "/video/$fileName";
     my $imageFile=$fileName;
     $imageFile=~s/\.(.+)$/.jpg/;
-    $data->{Caption}=CONF->{SERVICE_URL}. '/captions/'. $imageFile;
+#    $data->{Caption}=CONF->{SERVICE_URL}. '/captions/'. $imageFile;
+    $data->{Caption}=CONF->{SERVICE_URL}. '/captions/';
+    $data->{Caption}.=(-f CONF->{HOME_DIR}. '/www/captions/'. $imageFile) ? $imageFile : 'video-placeholder.jpg';
     push @anyTen, $data;
   }
   return $self->send_uber_list(\@anyTen);
 }
+sub search{
+  my ($self, $term)=@_;
+  return{error=>'Search term required'} unless $term;
+  my $videoData=$self->read_video_dir();
+  my @videoFiles=keys %{$videoData};
+  my @found;
+  foreach my $f(@videoFiles){
+    my $done=$self->check_if_done($f);
+    next unless $done; # not sure if this is needed, won't the search just fail anyway?
+    my $toSearch;
+    foreach my $tag(@h5vTags){
+      $toSearch.=$videoData->{$f}->{$tag};
+    }
+    if ($term=~/$toSearch/){
+      $videoData->{Source}=CONF->{SERVICE_URL}. "/video/$f";
+      my $imageFile=$f;
+      $imageFile=~s/\.(.+)$/.jpg/;
+      $videoData->{Caption}=CONF->{SERVICE_URL}. '/captions/';
+      $videoData->{Caption}.=(-f CONF->{HOME_DIR}. '/www/captions/'. $imageFile) ? $imageFile : 'video-placeholder.jpg';
+      push @found, $videoData;
+    }
+  }
+  return $self->send_uber_list(\@found);
+}
+# @request
+#    [{uberList1},{uberList2} ... ]
 sub send_uber_list {
   my ($self, $uberList)=@_;
   my %list=(
@@ -70,7 +98,6 @@ sub send_uber_list {
   # construct the playlist response
   my $i=0;
   foreach my $uber (@$uberList) {
-    # quick fix for m4v
     my %a=(id=>'video#'. $i, rel=>'item', name=>'playlists');
     my %b=(rel=>'replace', url=>'/playlists/', model=>'id='. $i, action=>'replace');
     my %c=(data=>[
@@ -94,14 +121,15 @@ sub send_uber_list {
   return \%list;
 }
 # @request
-#   {fn=>'filename',ext=>'.m4v'}
+#   {fn=>'filename',ext=>'.mp4'}
 # @response
 #   1=ok or 0=error
 sub check_if_done{
   my ($self, $fn)=@_;
-  $candidate=join '/', (CONF->{DONE_DIR}, $fn);
+  my $doneDir=CONF->{HOME_DIR}. "/done";
+  $candidate=join '/', ($doneDir, $fn);
   $success=0;
-  find(\&wanted, (CONF->{DONE_DIR}));
+  find(\&wanted, $doneDir);
   return $success;
 }
 ###############################################################################
@@ -129,25 +157,26 @@ sub find_random{
   return \%found;
 }
 # @request
-#   load_m3u($filename)
+#   read_video_dir()
 # @response
 #   [{filename1=>{mdat}}, {filename2=>{mdat}}]
+#   mdat is the video file metadata represented as a hash of tag/vals
 sub read_video_dir{
   my $self=shift;
-  chdir CONF->{DOC_ROOT};
+  my $videoDir=CONF->{HOME_DIR}. "/www/video";
+  chdir $videoDir;
   my @files=<*.*>;
-  chdir CONF->{HOME_DIR};
+  chdir CONF->{HOME_DIR}. '/perl'; # otherwise 'use Blah' will fail
   my $found;
-  # tags maintained by this script
-  my @h5vTags=qw(Title Producer Artist Rating Album Genre TrackNumber);
   my @exifTags=qw(MIMEType); # standard stuff we need, maybe add Duration, Height, Width later
   foreach my $f(@files){
-    my $vidFile=$self->{DOC_ROOT}. $f;
+    my $videoFile=$videoDir. "/$f";
     my $e=Image::ExifTool->new;
-    $found->{$f}=$e->ImageInfo($vidFile, (@h5vTags, @exifTags));
+    $found->{$f}=$e->ImageInfo($videoFile, (@h5vTags, @exifTags));
   }
   return $found;
 }
+# private
 # reads and writes to global vars
 sub wanted{
   return unless -f;
