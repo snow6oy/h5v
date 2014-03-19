@@ -49,18 +49,20 @@ sub load_anyten{
 }
 sub search{
   my ($self, $term)=@_;
-  return{error=>'Search term required'} unless $term;
+  return {error=>'Search term required'} unless $term;
   my $videoData=$self->read_video_dir();
   my @videoFiles=keys %{$videoData};
   my @found;
   foreach my $f(@videoFiles){
-    my $done=$self->check_if_done($f);
-    next unless $done; # not sure if this is needed, won't the search just fail anyway?
+    # not sure if this is needed, won't the search just fail anyway?
+    # my $done=$self->check_if_done($f);
+    # next unless $done; 
     my $toSearch;
     foreach my $tag(@h5vTags){
       $toSearch.=$videoData->{$f}->{$tag};
     }
-    if ($term=~/$toSearch/){
+    if ($toSearch=~/$term/i){
+      # print $toSearch. '<=>'. $term. " $f\n";
       $videoData->{Source}=CONF->{SERVICE_URL}. "/video/$f";
       my $imageFile=$f;
       $imageFile=~s/\.(.+)$/.jpg/;
