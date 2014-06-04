@@ -74,9 +74,10 @@ function handler(e){
   filename=videotarget.substr(0,videotarget.lastIndexOf('.'))||videotarget;
   video=document.querySelector("#video_player video");
   source=document.querySelectorAll("#video_player video source");
-  source[0].src=filename+ ".m4v";
-/*source[0].src=filename+".mp4";
-  source[1].src=filename+".webm"; */
+  source[0].src=filename+".mp4";
+  source[1].src=filename+".webm";
+  source[2].src=filename+".ogv";
+  source[3].src=filename+".m4v";
   video.load();
   video.play();
   /* lookup the selected vid using the href as a key */
