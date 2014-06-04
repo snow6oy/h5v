@@ -37,7 +37,7 @@ sub load_anyten{
   my @anyTen;
   foreach my $fileName (keys %$randomItems){
     my $data=$randomItems->{$fileName};
-    $data->{Source}=CONF->{SERVICE_URL}. $randomItems->{$fileName}->{Genre}. "/$fileName";
+    $data->{Source}=CONF->{SERVICE_URL}. "/video/$fileName";
     my $imageFile=$fileName;
     $imageFile=~s/\.(.+)$/.jpg/;
     $data->{Caption}=CONF->{SERVICE_URL}. '/captions/'. $imageFile;
