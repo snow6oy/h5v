@@ -40,7 +40,7 @@ sub load_anyten{
     $data->{Source}=CONF->{SERVICE_URL}. $randomItems->{$fileName}->{Genre}. "/$fileName";
     my $imageFile=$fileName;
     $imageFile=~s/\.(.+)$/.jpg/;
-    $data->{Caption}=CONF->{SERVICE_URL}. 'captions/'. $imageFile;
+    $data->{Caption}=CONF->{SERVICE_URL}. '/captions/'. $imageFile;
     push @anyTen, $data;
   }
   return $self->send_uber_list(\@anyTen);
