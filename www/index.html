@@ -1,0 +1,30 @@
+<!doctype html> 
+<html lang=en>
+  <head>
+  <title>h5v - a video player and store that uses html5</title>    
+  <link rel=stylesheet type=text/css href=h5v.css media=screen />
+</head>
+<body lang=en>
+  <input type=text placeholder=Search />
+  <input type=button value=Search class=button />
+  <figure id="video_player"></figure>
+  <form id="h5v">
+    <input size="40" id="title" value='' placeholder='Title' />
+    <input id="artist" value='' placeholder='Artist' />
+    <input id="album" value='' placeholder='Album' />
+    <input size="6" maxlength="2" id="rating" value='' placeholder='Rating' />
+    <input size="6" maxlength="2" id="trackNumber" value='' placeholder='Track#' />
+    <input id="producer" value='' placeholder='Producer' />
+    <input id="genre" value='' placeholder='Genre' />
+    <input type="submit" value="Update"/>
+  </form>  
+  <table class="read_only"><tr>
+  <td>source</td><td id="source"></td>
+  <td>type</td><td id="type"></td>
+  <td>caption</td><td id="caption"></td></tr></table>
+  <p>open playlist as <a href="/playlists/" target="_blank">JSON</a></p>
+</body>
+<!-- why does this need to go last for the button click to work -->
+<script src=js/jquery.min.js></script>
+<script src=js/h5v.js></script>
+</html>
