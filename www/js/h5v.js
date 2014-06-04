@@ -1,10 +1,10 @@
 /* vids=[{},{},{}] id=0..2 */
 var vids, id;
-/* TODO refactor the API so the client can use "action":"replace" to create ZzTags
+/* TODO refactor the API so the client can use "action":"replace" to create H5VTags
  * source, title and caption are all "action":"read"
  * OR just this array from the form.elements[]
  **/
-var zzTags=["source","title","artist","album","rating","trackNumber","producer","genre"];
+var h5vTags=["source","title","artist","album","rating","trackNumber","producer","genre"];
 
 $(document).ready(
   /* after button is clicked fetch the playlist */
@@ -24,21 +24,20 @@ $(document).ready(
           captions+='<a href="'+ i.source+ '"><img src="'+ i.caption+ '" alt="'+ i.title+ '"></a>';
   	    });
         $('#video_player').html('<video controls poster='+ links.poster.url+ '>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>');
-        $("#zzmeta").attr("action", links.add.url);
+        $("#h5v").attr("action", links.add.url);
         handleLinks();
       }
     });
   }),
-  $("#zzmeta").submit(function(e){
+  $("#h5v").submit(function(e){
     var json={};
     /* copy the user-entered form data */ 
-    for(var i=0;i<zzTags.length;i++){
-      json[zzTags[i]]=document.getElementById(zzTags[i]).value;
+    for(var i=0;i<h5vTags.length;i++){
+      json[h5vTags[i]]=document.getElementById(h5vTags[i]).value;
     }
     /* add the static file reference */
     json.source=$('#source').html();
     //alert("Handler called."+ json.source);
-    // var json={"source":"http://192.168.1.100/zz/marcoPolo/m6.m4v","title":"Tabatha Cazh","artist":"Artist","album":"Album","rating":"5","trackNumber":"21","producer":"Producer","genre":"Genre"};
     // remember for after form submitted
     window.vids[window.id]=json;
 /* TODO it like this var json=vids[id]; 
@@ -89,7 +88,7 @@ function handler(e){
   updateForm();
 }
 
-/* TODO rewrite this the jQuery way $.(#zzmeta).html(htmlString);
+/* TODO rewrite this the jQuery way $.(#h5v).html(htmlString);
 function updateText(link) {
   var x; 
   for (var i=0;i<vids.length;i++) {
