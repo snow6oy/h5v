@@ -90,7 +90,7 @@ function handler(e){
   //video=$("#video_player video").eq(0);
   console.log("fn "+ filename+ " video "+ video);  
   source=document.querySelectorAll("#video_player video source");
-  /* for this to work each file must be available in all 3 formats */
+  /* for this to work every video must have support for each format */
   source[0].src=filename+".mp4";
   source[1].src=filename+".webm";
   source[2].src=filename+".3gp";

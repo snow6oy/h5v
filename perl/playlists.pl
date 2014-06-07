@@ -2,6 +2,7 @@
 use Data::Dumper;
 use JSON;
 use H5V::Read;
+use H5V::Write;
 my $url=$ENV{REQUEST_URI};  # example:'REQUEST_URI' => '/playlists/search?term=a',
 # uber endpoint controls
 my $listUrl='/playlists/';
@@ -11,11 +12,24 @@ my $errorMessage={uber=>{version=>'1.0', error=>{data=>[{id=>'status', status =>
 # main
 if($url eq $listUrl){
   if($ENV{REQUEST_METHOD} eq 'GET'){
-    my $hr=H5V::Read->new;
-    my $pList=$hr->load_anyten();
-    print_response(200, $pList);
+    my $h5v=H5V::Read->new;
+    my $response=$h5v->load_anyten();
+    print_response(200, $response);
   }elsif($ENV{REQUEST_METHOD} eq 'PUT'){
-    show_error(405, 'Method not allowed'. $ENV{REQUEST_METHOD});
+    my $h5v=H5v::Write->new;
+    my $message;
+    # no more than 100 kilobytes of json. thanks!
+    if($ENV{'CONTENT_LENGTH'}<102400){
+      read(STDIN, $message, $ENV{'CONTENT_LENGTH'});
+    }else{
+      show_error(400, "Excessive content length");
+    }
+    unless($message){ # but >nada
+      show_error(400, 'Zero length body');
+    }
+    my $j=JSON->new;
+    my $response=$h5v->update_playlist($j->decode($message));
+    (exists($response->{error}))?show_error(500, $response->{error}):print_response(200, $response);
   }else{
     show_error(405, 'Method not allowed'. $ENV{REQUEST_METHOD});
   }
