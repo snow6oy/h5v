@@ -8,6 +8,9 @@ input[type=button]{
 input[type=text]{
   width:400px;
 }
+#h5v{
+  display:none;
+}
 #play_area{
   margin:10px auto; 
   height:42px; 
@@ -29,7 +32,6 @@ span{
 }
 */
 
-/* for dudley player */
 table.read_only td{
   border:1px dotted;
   font-family:sans-serif;

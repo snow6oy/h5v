@@ -24,13 +24,10 @@ $(document).ready(
            json.uber.playlist[i].url  NOT json.uber.data[0].data[0].url; */
         var links=flattenLinks(json.uber.data[0]);
 	      window.vids=flattenItems(json.uber.data[1]);
-        console.log("number of vids found="+ window.vids.length);
 	      window.vids.forEach(function(i){
           sources+='<source src="'+ i.source+ '" type="'+ i.type+ '">';
           captions+='<a href="'+ i.source+ '"><img src="'+ i.caption+ '" alt="'+ i.title+ '"></a>';
   	    });
-        var pluralised=(window.vids.length==1) ? 'video' : 'videos';
-        $('#search_results').html('Found '+ window.vids.length+ ' '+ pluralised);
         if(window.vids.length>0){
           $('#video_player').html('<video controls poster='+ links.poster.url+ '>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>');
           $("#h5v").attr("action", links.add.url);
@@ -38,6 +35,9 @@ $(document).ready(
         }else{ // nuke anything displayed from previous search
           $('#video_player').html('');
           updateForm();
+          /* var pluralised=(window.vids.length==1) ? 'video' : 'videos';
+          $('#search_results').html('Found '+ window.vids.length+ ' '+ pluralised); */
+          $('#search_results').html('No videos found');
         }
       }
     });
@@ -77,22 +77,23 @@ $(document).ready(
 function handleLinks(){
   var video_player=document.getElementById("video_player");
   var links=video_player.getElementsByTagName('a');
-  console.log("links="+ links.length);
   for(var i=0;i<links.length;i++){
     links[i].onclick=handler;
   }
 }
 
 function handler(e){
-  e.preventDefault();
-  videotarget=this.getAttribute("href");
+  e.preventDefault(); // don't follow the a tag
+  videotarget=$(this).attr("href");
   filename=videotarget.substr(0,videotarget.lastIndexOf('.'))||videotarget;
   video=document.querySelector("#video_player video");
+  //video=$("#video_player video").eq(0);
+  console.log("fn "+ filename+ " video "+ video);  
   source=document.querySelectorAll("#video_player video source");
+  /* for this to work each file must be available in all 3 formats */
   source[0].src=filename+".mp4";
   source[1].src=filename+".webm";
-/*  source[2].src=filename+".ogv";
-  source[3].src=filename+".m4v"; */
+  source[2].src=filename+".3gp";
   video.load();
   video.play();
   /* lookup the selected vid using the href as a key */
@@ -102,6 +103,7 @@ function handler(e){
     }
   }
   updateForm();
+  $("#h5v").show(); // display the updated form
 }
 
 /* TODO rewrite this the jQuery way $.(#h5v).html(htmlString);

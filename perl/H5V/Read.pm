@@ -13,7 +13,7 @@ my %m=(
  addControl=>{id=>'add', rel=>'add', name=>'links', url=>'/playlists/', action=>'append', model=>'term={text}'},
  filterControl=>{id=>'search', rel=>'search', name=>'links', url=>'/playlists/search', action=>'read', model=>'?term={text}'},
  listControl=>{id=>'list', rel=>'collection', name=>'links', url=>'/playlists/', action=>'read'},
- posterControl=>{id=>'poster', rel=>'icon', url=>'http://'. CONF->{SERVICE_URL}. '/images/dzlogo.png', action=>'read'},
+ posterControl=>{id=>'poster', rel=>'icon', url=>CONF->{SERVICE_URL}. '/images/dzlogo.png', action=>'read'},
 );
 # global vars required by File::Find
 my $candidate;
@@ -63,12 +63,13 @@ sub search{
     }
     if ($toSearch=~/$term/i){
       # print $toSearch. '<=>'. $term. " $f\n";
-      $videoData->{Source}=CONF->{SERVICE_URL}. "/video/$f";
+      my $match=$videoData->{$f};
+      $match->{Source}=CONF->{SERVICE_URL}. "/video/$f";
       my $imageFile=$f;
       $imageFile=~s/\.(.+)$/.jpg/;
-      $videoData->{Caption}=CONF->{SERVICE_URL}. '/captions/';
-      $videoData->{Caption}.=(-f CONF->{HOME_DIR}. '/www/captions/'. $imageFile) ? $imageFile : 'video-placeholder.jpg';
-      push @found, $videoData;
+      $match->{Caption}=CONF->{SERVICE_URL}. '/captions/';
+      $match->{Caption}.=(-f CONF->{HOME_DIR}. '/www/captions/'. $imageFile) ? $imageFile : 'video-placeholder.jpg';
+      push @found, $match;
     }
   }
   return $self->send_uber_list(\@found);
@@ -116,7 +117,7 @@ sub send_uber_list {
     ]);
     # quick fix for m4v mime type
     # $c{data}->[3]=~s#video/x-m4v#video/mp4#g;
-    $c{data}->[3]='video/mp4';
+    # $c{data}->[3]='video/mp4';
     push @{$list{uber}->{data}->[1]->{data}}, (\%a, [\%b, \%c]);
     $i++;
   }

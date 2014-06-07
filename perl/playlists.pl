@@ -25,6 +25,7 @@ if($url eq $listUrl){
   if($ENV{REQUEST_METHOD} eq 'GET'){
     my $hr=H5V::Read->new;
     my $pList=$hr->search($filter);
+    print_response(200, $pList);    
   }else{
     show_error(405, 'Method not allowed');
   }
