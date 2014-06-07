@@ -7,10 +7,15 @@ var vids, id;
 var h5vTags=["source","title","artist","album","rating","trackNumber","producer","genre"];
 
 $(document).ready(
-  /* after button is clicked fetch the playlist */
+  /* after search button is clicked fetch the playlist */
   $('.button').click(function(){
+    var url='/playlists/';
+    if($('.query').val()){
+      url+='search?term='+ $('.query').val();
+    }
+    // console.log("url "+ url);    
     $.ajax({
-      url:"/playlists/",
+      url:url,
       dataType:"text",
       success:function(data){
         var json=$.parseJSON(data);
@@ -19,16 +24,25 @@ $(document).ready(
            json.uber.playlist[i].url  NOT json.uber.data[0].data[0].url; */
         var links=flattenLinks(json.uber.data[0]);
 	      window.vids=flattenItems(json.uber.data[1]);
+        console.log("number of vids found="+ window.vids.length);
 	      window.vids.forEach(function(i){
           sources+='<source src="'+ i.source+ '" type="'+ i.type+ '">';
           captions+='<a href="'+ i.source+ '"><img src="'+ i.caption+ '" alt="'+ i.title+ '"></a>';
   	    });
-        $('#video_player').html('<video controls poster='+ links.poster.url+ '>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>');
-        $("#h5v").attr("action", links.add.url);
-        handleLinks();
+        var pluralised=(window.vids.length==1) ? 'video' : 'videos';
+        $('#search_results').html('Found '+ window.vids.length+ ' '+ pluralised);
+        if(window.vids.length>0){
+          $('#video_player').html('<video controls poster='+ links.poster.url+ '>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>');
+          $("#h5v").attr("action", links.add.url);
+          handleLinks();
+        }else{ // nuke anything displayed from previous search
+          $('#video_player').html('');
+          updateForm();
+        }
       }
     });
   }),
+  /* after update button then submit the form */
   $("#h5v").submit(function(e){
     var json={};
     /* copy the user-entered form data */ 
@@ -63,6 +77,7 @@ $(document).ready(
 function handleLinks(){
   var video_player=document.getElementById("video_player");
   var links=video_player.getElementsByTagName('a');
+  console.log("links="+ links.length);
   for(var i=0;i<links.length;i++){
     links[i].onclick=handler;
   }
@@ -76,8 +91,8 @@ function handler(e){
   source=document.querySelectorAll("#video_player video source");
   source[0].src=filename+".mp4";
   source[1].src=filename+".webm";
-  source[2].src=filename+".ogv";
-  source[3].src=filename+".m4v";
+/*  source[2].src=filename+".ogv";
+  source[3].src=filename+".m4v"; */
   video.load();
   video.play();
   /* lookup the selected vid using the href as a key */

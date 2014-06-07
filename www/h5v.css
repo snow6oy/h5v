@@ -57,13 +57,13 @@ table.read_only td{
   transition:1s opacity;
 }
 #video_player figcaption a img,figure video{
-  width:60%;
+  width:100%;
   height:auto;
 }
 #video_player figcaption a:hover{
   opacity:1;
 }
-/* uncomment this for vertical display*/
+/* flip the captions from left to underneath */
   @media screen and (max-width:700px) { 
   #video_player video,#video_player figcaption {
     display:table-row;
