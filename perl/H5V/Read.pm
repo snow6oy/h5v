@@ -1,33 +1,23 @@
 package H5V::Read;
+use parent 'H5V';
 use strict;
 use Data::Dumper;
 use File::Find;
-use File::Basename;
 use Image::ExifTool;
-use constant CONF=>{
-  SERVICE_URL=>'http://h5v.fnarg.net', # web root
-  HOME_DIR=>'/opt/git/h5v'             # working dir
-};
 # hypermedia controls
 my %m=(
  addControl=>{id=>'add', rel=>'add', name=>'links', url=>'/playlists/', action=>'append', model=>'term={text}'},
  filterControl=>{id=>'search', rel=>'search', name=>'links', url=>'/playlists/search', action=>'read', model=>'?term={text}'},
  listControl=>{id=>'list', rel=>'collection', name=>'links', url=>'/playlists/', action=>'read'},
- posterControl=>{id=>'poster', rel=>'icon', url=>CONF->{SERVICE_URL}. '/images/dzlogo.png', action=>'read'},
+ posterControl=>{id=>'poster', rel=>'icon', url=>'http://h5v.fnarg.net/images/dzlogo.png', action=>'read'},
 );
 # global vars required by File::Find
 my $candidate;
 my $success;
-# custom tags stored in media file
-my @h5vTags=qw(Title Producer Artist Rating Album Genre TrackNumber);
-# @request
-#   new(dirName)            read files OR die
 sub new{
-  my ($proto, $docRoot)=@_;
+  my $proto=shift;
   my $class=ref($proto)||$proto;
-  my $self={
-    DOC_ROOT=>$docRoot,
-  };
+  my $self={};
   bless ($self, $class);
   return $self;
 }
@@ -35,45 +25,44 @@ sub load_anyten{
   my $self=shift;
   my $randomItems=$self->find_random();
   my @anyTen;
-  foreach my $fileName (keys %$randomItems){
-    my $data=$randomItems->{$fileName};
-    $data->{Source}=CONF->{SERVICE_URL}. "/video/$fileName";
-    my $imageFile=$fileName;
-    $imageFile=~s/\.(.+)$/.jpg/;
-#    $data->{Caption}=CONF->{SERVICE_URL}. '/captions/'. $imageFile;
-    $data->{Caption}=CONF->{SERVICE_URL}. '/captions/';
-    $data->{Caption}.=(-f CONF->{HOME_DIR}. '/www/captions/'. $imageFile) ? $imageFile : 'video-placeholder.jpg';
+  foreach my $filename(keys %$randomItems){
+    my $data=$randomItems->{$filename};
+    my $webPath=$self->SUPER::file_to_web($filename);
+    $data->{Source}=$webPath->{Source};
+    $data->{Caption}=$webPath->{Caption};
     push @anyTen, $data;
   }
-  return $self->send_uber_list(\@anyTen);
+  return \@anyTen;
+  #return $self->send_uber_list(\@anyTen);
 }
 sub search{
   my ($self, $term)=@_;
   return {error=>'Search term required'} unless $term;
   my $videoData=$self->read_video_dir();
   my @videoFiles=keys %{$videoData};
+  my @tags=$self->SUPER::get_tags();
   my @found;
   foreach my $f(@videoFiles){
     # not sure if this is needed, won't the search just fail anyway?
     # my $done=$self->check_if_done($f);
     # next unless $done; 
     my $toSearch;
-    foreach my $tag(@h5vTags){
+    foreach my $tag(@tags){
       $toSearch.=$videoData->{$f}->{$tag};
     }
     if ($toSearch=~/$term/i){
       # print $toSearch. '<=>'. $term. " $f\n";
       my $match=$videoData->{$f};
-      $match->{Source}=CONF->{SERVICE_URL}. "/video/$f";
-      my $imageFile=$f;
-      $imageFile=~s/\.(.+)$/.jpg/;
-      $match->{Caption}=CONF->{SERVICE_URL}. '/captions/';
-      $match->{Caption}.=(-f CONF->{HOME_DIR}. '/www/captions/'. $imageFile) ? $imageFile : 'video-placeholder.jpg';
+      my $webPath=$self->SUPER::file_to_web($f);
+      $match->{Source}=$webPath->{Source};
+      $match->{Caption}=$webPath->{Caption};
       push @found, $match;
     }
   }
-  return $self->send_uber_list(\@found);
+  return \@found;
+  #return $self->send_uber_list(\@found);
 }
+# TODO move this into PHP once OAuth done
 # @request
 #    [{uberList1},{uberList2} ... ]
 sub send_uber_list {
@@ -129,10 +118,10 @@ sub send_uber_list {
 #   1=ok or 0=error
 sub check_if_done{
   my ($self, $fn)=@_;
-  my $doneDir=CONF->{HOME_DIR}. "/done";
-  $candidate=join '/', ($doneDir, $fn);
+  my $doneCandidate=$self->SUPER::get_done_candidate($fn);
+  $candidate=$doneCandidate->{candidate};
   $success=0;
-  find(\&wanted, $doneDir);
+  find(\&wanted, $doneCandidate->{doneDir});
   return $success;
 }
 ###############################################################################
@@ -166,16 +155,14 @@ sub find_random{
 #   mdat is the video file metadata represented as a hash of tag/vals
 sub read_video_dir{
   my $self=shift;
-  my $videoDir=CONF->{HOME_DIR}. "/www/video";
-  chdir $videoDir;
-  my @files=<*.*>;
-  chdir CONF->{HOME_DIR}. '/perl'; # otherwise 'use Blah' will fail
+  my ($videoDir, $files)=$self->SUPER::get_video_filenames();
+  my @tags=$self->SUPER::get_tags();
   my $found;
   my @exifTags=qw(MIMEType); # standard stuff we need, maybe add Duration, Height, Width later
-  foreach my $f(@files){
+  foreach my $f(@$files){
     my $videoFile=$videoDir. "/$f";
     my $e=Image::ExifTool->new;
-    $found->{$f}=$e->ImageInfo($videoFile, (@h5vTags, @exifTags));
+    $found->{$f}=$e->ImageInfo($videoFile, (@tags, @exifTags));
   }
   return $found;
 }

@@ -5,12 +5,13 @@ use File::Basename;
 use Image::ExifTool;
 #use constant CONF=>{
 #  SERVICE_URL=>'http://h5v.fnarg.net', # web root
-#  HOME_DIR=>'/opt/git/h5v'             # working dir
 #};
 use constant CONF=>{
+  HOME_DIR=>'/opt/git/h5v',             # working dir
+
   DOC_ROOT=>'/home/gavin/zz/m4v/',    # media source. provided at runtime as ZzMeta->new(/path/to/video)
   DONE_DIR=>'/home/gavin/zz/done',    # contains symlinks that map old to new filenames
-  HOME_DIR=>'/opt/zzmeta',            # the runtime environment
+#  HOME_DIR=>'/opt/zzmeta',            # the runtime environment
   WWW_DIR=>'/home/gavin/zz/www',      # where updated files go, when MOVE_OK is false
   SERVICE_IP=>'192.168.1.100',         # server images and video
   SERVICE_URL=>'http://192.168.1.100/zz/' # combination of DOCROOT and IP
@@ -41,7 +42,7 @@ sub new{
 #   2 if file was written but no changes made, 
 #sub write_metadata {
 
-sub update_playlist{
+sub create_new{
   my($self, $mdat)=@_;
   my($srcFile, $dstFile, $fn, $success);
   # source directory must exist and be readable to continue
@@ -61,40 +62,69 @@ sub update_playlist{
   } else {
     return{error=>'Cannot write metadata(2):'. $srcFile};
   }
-  #print($srcFile, $dstFile, "\n");
-  my $e=Image::ExifTool->new;
-  #set a new value for a tag (errors go to STDERR)
-  foreach my $tag (keys %{$mdat}) {
-    unless($e->SetNewValue($tag, $mdat->{$tag})) {
-      $success->{error}=$e->GetValue('Error');
-      last;
-    }
+  my $outcome=$self->update_metadata($mdat);
+  if($outcome){
+    return {error=>'Cannot write metadata(3 or 4):'. $outcome->{error}};
   }
-  if(exists($success->{error})){
-    return{error=>'Cannot write metadata(3):'. $success->{error}};
-  }elsif($srcFile eq $dstFile){
-    $success=$e->WriteInfo($srcFile);
+  #print($srcFile, $dstFile, "\n");
+  if($srcFile eq $dstFile){
   }else{
-    $success=$e->WriteInfo($srcFile, $dstFile);
+    #$success=$exif->WriteInfo($srcFile, $dstFile);
   }
   if($success and _mark_as_done($mdat->{genre}, $newFn, $dstFile)){
     return {}; # success
   }elsif($success){
     return{error=>'Cannot write metadata(5): symlink was not created'};
   }else{
-    return{error=>'Cannot write metadata(4):'.  $e->GetValue('Error')};
+    return{error=>'Cannot write metadata(4):'. undef };
   }
-  return{body=>'update ok'});
+  return{body=>'update ok'};
 }
+
+sub update_metadata{
+  my($self, $mdat)=@_;
+  # TODO source is web, convert to file
+  my $filename=$mdat->{source};  
+  my $exif=Image::ExifTool->new;
+  my $error;
+  #set a new value for a tag (errors go to STDERR)
+  foreach my $tag(keys %{$mdat}){
+    my ($ok, $e)=$exif->SetNewValue($tag, $mdat->{$tag});
+    if (! $ok){
+      $error=$tag. ':'. $e;
+      last;
+    }
+  }
+  if($error){
+    return $error;
+  }elsif(! $exif->WriteInfo($filename)){
+    return undef; # success
+  }else{
+    return $exif->GetValue('Error');
+  }
+} 
 ###############################################################################
 # stubs
 sub new_filename{
   my ($self, $mdat)=@_;
   return _new_filename($mdat);
 }
+# similar to Read::read_video_dir but hash has different keys
 sub get_wwwdir_filenames{
   my $self=shift;
-  return _get_wwwdir_filenames();
+# global var in Read
+  my @h5vTags=qw(Title Producer Artist Rating Album Genre TrackNumber);
+  my $videoDir=CONF->{HOME_DIR}. "/www/video";
+  chdir $videoDir;
+  my @files=<*.*>;
+  chdir CONF->{HOME_DIR}. '/perl'; # otherwise 'use Blah' will fail
+  my $found;
+  foreach my $f(@files){
+    $f=~s/\d\d\d\.(.+)$//;
+    $found->{$f}++;
+    # print; print "\n";
+  }
+  return $found;
 }
 sub mark_as_done{
   my $self=shift;
@@ -149,17 +179,5 @@ sub _make_string{
   substr $s, 0, 12; 
   $s=~s/\./-/g;
   return $s;
-}
-sub _get_wwwdir_filenames{
-  chdir CONF->{WWW_DIR};
-  my @files=<*.*>;
-  chdir CONF->{HOME_DIR};
-  my %seen;
-  foreach(@files){
-    s/\d\d\d\.(.+)$//;
-    $seen{$_}++;
-    # print; print "\n";
-  }
-  return \%seen;
 }
 1;

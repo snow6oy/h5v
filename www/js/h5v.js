@@ -88,12 +88,12 @@ function handler(e){
   filename=videotarget.substr(0,videotarget.lastIndexOf('.'))||videotarget;
   video=document.querySelector("#video_player video");
   //video=$("#video_player video").eq(0);
-  console.log("fn "+ filename+ " video "+ video);  
+  // console.log("fn "+ filename+ " video "+ video);  
   source=document.querySelectorAll("#video_player video source");
   /* for this to work every video must have support for each format */
   source[0].src=filename+".mp4";
-  source[1].src=filename+".webm";
-  source[2].src=filename+".3gp";
+  source[1].src=filename+".webm";  // Exiftool can't update webm
+  source[2].src=filename+".3gp";   // wrong mimetype
   video.load();
   video.play();
   /* lookup the selected vid using the href as a key */
@@ -119,7 +119,21 @@ function updateText(link) {
 
 function updateForm() {
   var x=window.id; // convenience
+  // but what about the placholders?
+  for(var i=0;i<h5vTags.length;i++){
+    // console.log("mdat form "+ h5vTags[i]+ ':'+ val);
+    document.getElementById(h5vTags[i]).value=window.vids[x][h5vTags[i]];
+  }
+  // source is in both h5vTags and below .. might need to sort it out later
+  // for now it goes after the loop
+  document.getElementById('source').innerHTML=window.vids[x].source;  
+  document.getElementById('type').innerHTML=window.vids[x].type;
+  document.getElementById('caption').innerHTML=window.vids[x].caption;  
+}
 
+
+function XXXupdateForm() {
+  var x=window.id; // convenience
   document.getElementById('source').innerHTML=window.vids[x].source;
   document.getElementById('type').innerHTML=window.vids[x].type;
   document.getElementById('caption').innerHTML=window.vids[x].caption;

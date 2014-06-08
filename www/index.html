@@ -6,7 +6,8 @@
 </head>
 <body lang=en>
   <input type=text class=query placeholder="Enter search term or leave empty for random" />
-  <input type=button class=button value=Search  />
+  <input type=button class=button value=Search />
+  <input type=button class=button value=Upload />  
   <div id="search_results"></div>
   <figure id="video_player"></figure>
   <form id="h5v">
@@ -17,7 +18,7 @@
     <input size="6" maxlength="2" id="trackNumber" value='' placeholder='Track#' />
     <input id="producer" value='' placeholder='Producer' />
     <input id="genre" value='' placeholder='Genre' />
-    <input type="submit" value="Update"/>
+    <p id="update_button"><input type="submit" value=Update /></p>    
   </form>  
   <table class="read_only"><tr>
   <td>source</td><td id="source"></td></tr><tr>
