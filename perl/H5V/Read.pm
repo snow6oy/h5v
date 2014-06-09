@@ -37,11 +37,11 @@ sub load_anyten{
 }
 sub search{
   my ($self, $term)=@_;
-  return {error=>'Search term required'} unless $term;
+  return [{error=>'Search term required'}] unless $term;
   my $videoData=$self->read_video_dir();
   my @videoFiles=keys %{$videoData};
   my @tags=$self->SUPER::get_tags();
-  my @found;
+  my @found=();
   foreach my $f(@videoFiles){
     # not sure if this is needed, won't the search just fail anyway?
     # my $done=$self->check_if_done($f);
@@ -117,11 +117,11 @@ sub send_uber_list {
 # @response
 #   1=ok or 0=error
 sub check_if_done{
-  my ($self, $fn)=@_;
-  my $doneCandidate=$self->SUPER::get_done_candidate($fn);
-  $candidate=$doneCandidate->{candidate};
+  my ($self, $splitFn)=@_;
+  my $doneCandidate=$self->SUPER::get_done_candidate($splitFn);
+  $candidate=$doneCandidate->{filename};
   $success=0;
-  find(\&wanted, $doneCandidate->{doneDir});
+  find(\&wanted, $doneCandidate->{dir});
   return $success;
 }
 ###############################################################################
@@ -142,7 +142,7 @@ sub find_random{
     push @lookups, $keys[$rndNumber];
   }
   foreach(@lookups){
-    my $done=$self->check_if_done($videoData->{$_}->{Genre}, $_);
+    my $done=$self->check_if_done({filename=>$_});
     $videoData->{$_}->{Title}='__DONE__' if $done;
     $found{$_}=$videoData->{$_};
   }
@@ -155,12 +155,12 @@ sub find_random{
 #   mdat is the video file metadata represented as a hash of tag/vals
 sub read_video_dir{
   my $self=shift;
-  my ($videoDir, $files)=$self->SUPER::get_video_filenames();
+  my $videoDir=$self->SUPER::get_video_filenames();
   my @tags=$self->SUPER::get_tags();
   my $found;
   my @exifTags=qw(MIMEType); # standard stuff we need, maybe add Duration, Height, Width later
-  foreach my $f(@$files){
-    my $videoFile=$videoDir. "/$f";
+  foreach my $f(@{$videoDir->{files}}){
+    my $videoFile=$videoDir->{name}. "/$f";
     my $e=Image::ExifTool->new;
     $found->{$f}=$e->ImageInfo($videoFile, (@tags, @exifTags));
   }
