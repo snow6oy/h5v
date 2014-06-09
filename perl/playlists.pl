@@ -40,9 +40,13 @@ if($url eq $listUrl){
   my $filter=$ENV{QUERY_STRING};  # term=a
   $filter=~s/^term=//;
   if($ENV{REQUEST_METHOD} eq 'GET'){
-    my $hr=H5V::Read->new;
-    my $pList=$hr->search($filter);
-    print_response(200, $h5v->send_uber_list($pList));    
+    my $h5v=H5V::Read->new;
+    my $pList=$h5v->search($filter);
+    if (exists($pList->[0]->{error})){
+      show_error(400, $pList->[0]->{error});
+    }else{
+      print_response(200, $h5v->send_uber_list($pList));
+    }
   }else{
     show_error(405, 'Method not allowed');
   }
