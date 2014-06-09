@@ -20,8 +20,8 @@ if($url eq $listUrl){
     my $h5v=H5V::Write->new;
     my $message;
     # no more than 100 kilobytes of json. thanks!
-    if($ENV{'CONTENT_LENGTH'}<102400){
-      read(STDIN, $message, $ENV{'CONTENT_LENGTH'});
+    if($ENV{CONTENT_LENGTH}<102400){
+      read(STDIN, $message, $ENV{CONTENT_LENGTH});
       # testing, testing 1 2 3
       # print_response(200, $j->decode($message));
     }else{
