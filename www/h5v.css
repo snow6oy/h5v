@@ -8,14 +8,11 @@ input[type=button]{
 input[type=text]{
   width: 400px;
 }
-#h5v{
-  display: none;
-}
 #play_area{
-  margin: 10px auto; 
-  height: 42px; 
-  padding: 5px 10px 5px 10px; 
-  background-color: #FFF; 
+  margin: 10px auto;
+  height: 42px;
+  padding: 5px 10px 5px 10px;
+  background-color: #FFF;
   border-bottom: dotted 1px #7c7c7c;
   overflow: hidden;
 }
@@ -25,23 +22,11 @@ input[type=text]{
 span{
   font-color: #F00;
 }
-/*
-#mdat{
-  width: 500px;
-  height: auto;
-  padding: 5px 10px 5px 10px;
-  position: fixed;
-  left: 50%;
-}
-*/
-
 table.read_only td{
   border: 1px dotted;
   font-family: sans-serif;
   color: #999;
 }
-
-
 #video_player{
   display: table;
   line-height: 0;
@@ -69,7 +54,7 @@ table.read_only td{
   opacity: 1;
 }
 /* flip the captions from left to underneath */
-  @media screen and (max-width: 700px) { 
+  @media screen and (max-width: 700px) {
   #video_player video,#video_player figcaption {
     display: table-row;
   }
