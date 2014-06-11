@@ -5,6 +5,25 @@ function uber(url){
 //  this.items=["one","two"];
 //  var items;
   //this.tags=["title","artist","album","rating","trackNumber","producer","genre"];
+  this.create=function(form, responseHandler){ // either upload a new asset OR promote an existing asset
+    console.log("uploader called with "+ form.id);
+    /* refactor to use UPDATE code */
+    var payload={};
+    for(var i=0;i<form.length;i++){
+      elem=form.elements[i];
+      if(elem.type!="submit"){ // skip the submit element
+        payload[elem.id]=elem.value;
+      }
+    }
+    var xhr=new XMLHttpRequest();
+    xhr.open('POST', this.homeUrl);
+    xhr.onreadystatechange=function(){
+      if(this.readyState==4){
+        responseHandler.call(this);
+      }
+    }
+    xhr.send(JSON.stringify(payload));    
+  };  
   // search with a filter or leave empty for random
   this.read=function(filter, responseHandler){
     var xhr=new XMLHttpRequest();
@@ -28,13 +47,11 @@ function uber(url){
     }
     xhr.send(null); // no payload
   };
-  this.create=function(){ // either upload a new asset OR promote an existing asset
-  };
   this.update=function(form, responseHandler){ // replace metadata
     var payload={};
     for(var i=0;i<form.length;i++){
       elem=form.elements[i];
-      if(elem.id){ // skip elements without ids, e.g. the submit button
+      if(elem.type!="submit"){ // skip the submit element
         payload[elem.id]=elem.value;
       }
     }
@@ -42,7 +59,6 @@ function uber(url){
     xhr.open('PUT', this.homeUrl);
     xhr.onreadystatechange=function(){
       if(this.readyState==4){
-        this.response=JSON.parse(xhr.responseText);
         responseHandler.call(this);
       }
     }

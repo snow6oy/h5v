@@ -1,6 +1,7 @@
 /* vids=[{},{},{}] id=0..2 */
 var vids, id;
 var u=new uber('/playlists/');
+//var state="update_metadata";
 /* TODO refactor the API so the client can use "action":"replace" to create H5VTags
  * source, title and caption are all "action":"read"
  * OR just this array from the form.elements[]
@@ -41,7 +42,7 @@ function handler(e){
     }
   }
   updateForm();
-  show('update_metadata');
+  show("update_metadata");
 }
 function updateForm() {
   var x=window.id; // convenience
@@ -62,12 +63,13 @@ window.addEventListener("load", function(){
   function ratingIsNumber(rating){
     //var reg=new RegExp("^[-]?[0-9]+[\.]?[0-9]+$");
     var reg=new RegExp("^[-]?[0-5]$");    
-    return reg.test(rating);
+    return reg.test(rating.value);
   }
   function trackIsNumber(trackNumber){
     var reg=new RegExp("^[0-9]+$");  // any positive integer    
-    return reg.test(trackNumber);
+    return reg.test(trackNumber.value);
   }
+
   /*
    * READ
    */
@@ -90,16 +92,25 @@ window.addEventListener("load", function(){
       }else{ // nuke anything displayed from previous search
         document.getElementById('video_player').innerHTML='';
         updateForm();
-        /* var pluralised=(window.vids.length==1) ? 'video' : 'videos';
-        $('#search_results').html('Found '+ window.vids.length+ ' '+ pluralised); */
-        document.getElementById('video_player').innerHTML='No videos found';
+        document.getElementById('search_results').innerHTML='No videos found';
       }
     });
   });
-  /*
-   * UPDATE
-   */
+
   var form=document.getElementById("update_metadata");
+  /*
+   * CREATE: Uploader
+   */
+  var button=document.getElementById('upload');
+  button.addEventListener("click", function (event){
+//    document.getElementById("update_metadata").id="promote_metadata";
+    document.getElementById("submit_button").value="Promote";
+//    window.state="promote_metadata"; // cannot rely on form id so use a global var instead
+//    var form=document.getElementById("promote_metadata");
+//    form.addEventListener("submit", function (event){
+//      event.preventDefault();
+    console.log("promoting");
+  });
   form.addEventListener("submit", function (event){
     event.preventDefault();
     if(! ratingIsNumber(document.getElementById('rating'))){
@@ -108,12 +119,31 @@ window.addEventListener("load", function(){
     if(! trackIsNumber(document.getElementById("trackNumber"))){
       document.getElementById('trackNumber').value=0; // trackNumber='thirteen' will raise a server error
     }
-    u.update(form, function(){
-      if(this.status==200){  // TODO use a switch 200 400 500 etc.
-        console.log("response "+ this.response.body);
-      }else{
-        console.log("response '"+ this.status+ "' fnarg!");
-      }
-    });
+    if(document.getElementById("submit_button").value=='Update'){
+  /* 
+   * UPDATE
+   */
+      u.update(form, function(){
+        var r=JSON.parse(this.responseText);
+        if(this.status==200){  // TODO use a switch 200 400 500 etc.
+          document.getElementById('search_results').innerHTML=r.body;
+        }else{
+          document.getElementById('search_results').innerHTML=r.uber.error.data[1].message;
+        }
+      });
+    }
+    if(document.getElementById("submit_button").value=='Promote'){
+  /*
+   * CREATE: Promoter
+   */      
+      u.create(form, function(){
+        var r=JSON.parse(this.responseText);
+        if(this.status==201){  // TODO use a switch 200 400 500 etc.
+          document.getElementById('search_results').innerHTML=r.body;
+        }else{
+          document.getElementById('search_results').innerHTML=r.uber.error.data[1].message;
+        }
+      });
+    }
   });
 });

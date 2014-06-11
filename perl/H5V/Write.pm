@@ -20,7 +20,11 @@ sub new{
 #   0 on file write error
 #   1 if file was written OK, 
 #   2 if file was written but no changes made
-sub create_new{
+sub create{
+  my($self, $params)=@_;
+  return undef;
+}
+sub create_old{
   my($self, $mdat)=@_;
   my($srcFile, $dstFile, $fn, $success);
   # source directory must exist and be readable to continue

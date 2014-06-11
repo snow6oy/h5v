@@ -7,7 +7,7 @@
 <body lang=en>
   <input id="filter" type=text class=query placeholder="Enter search term or leave empty for random" />
   <input id="search" type=button class=button value=Search />
-  <input type=button class=button value=Upload />
+  <input id="upload" type=button class=button value=Upload />  
   <div id="search_results"></div>
   <figure id="video_player"></figure>
   <form id="update_metadata" style="display:none">
@@ -48,7 +48,7 @@
       <option>world</option>
     </select>
     <input type=hidden id="source" />
-    <p id="update_button"><input type="submit" value=Update /></p>
+    <input id="submit_button" type=submit class=button value=Update />
   </form>
   <table class="read_only"><tr>
   <td>type</td><td id="type"></td></tr><tr>

@@ -16,7 +16,7 @@ if($url eq $listUrl){
     my $h5v=H5V::Read->new;
     my $pList=$h5v->load_anyten();
     print_response(200, $h5v->send_uber_list($pList));
-  }elsif($ENV{REQUEST_METHOD} eq 'PUT'){
+  }elsif($ENV{REQUEST_METHOD} eq 'PUT' or $ENV{REQUEST_METHOD} eq 'POST'){
     my $h5v=H5V::Write->new;
     my $message;
     # no more than 100 kilobytes of json. thanks!
@@ -29,12 +29,15 @@ if($url eq $listUrl){
     }
     unless($message){ # but >nada
       show_error(400, 'Zero length body');
-    }else{
+    }elsif($ENV{REQUEST_METHOD} eq 'POST'){
+      my $error=$h5v->create($j->decode($message));
+      ($error) ? show_error(500, $error) : print_response(201, {body=>'created'});
+    }elsif($ENV{REQUEST_METHOD} eq 'PUT'){
       my $error=$h5v->update_metadata($j->decode($message));
       ($error) ? show_error(500, $error) : print_response(200, {body=>'update ok'});      
     }
   }else{
-    show_error(405, 'Method not allowed'. $ENV{REQUEST_METHOD});
+    show_error(405, $ENV{REQUEST_METHOD}. ' method not allowed');
   }
 }elsif($url=~m#^$filterUrl.*#){
   my $filter=$ENV{QUERY_STRING};  # term=a
