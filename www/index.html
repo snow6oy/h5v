@@ -1,32 +1,60 @@
-<!doctype html> 
+<!doctype html>
 <html lang=en>
   <head>
-  <title>h5v | html5 video++</title>    
+  <title>dishyzee | music video++</title>
   <link rel=stylesheet type=text/css href=h5v.css media=screen />
 </head>
 <body lang=en>
-  <input type=text class=query placeholder="Enter search term or leave empty for random" />
-  <input type=button class=button value=Search />
-  <input type=button class=button value=Upload />  
+  <input id="filter" type=text class=query placeholder="Enter search term or leave empty for random" />
+  <input id="search" type=button class=button value=Search />
+  <input type=button class=button value=Upload />
   <div id="search_results"></div>
   <figure id="video_player"></figure>
-  <form id="h5v">
-    <input size="40" id="title" value='' placeholder='Title' />
+  <form id="update_metadata" style="display:none">
+    <input size="30" id="title" value='' placeholder='Title' />
     <input id="artist" value='' placeholder='Artist' />
     <input id="album" value='' placeholder='Album' />
     <input size="6" maxlength="2" id="rating" value='' placeholder='Rating' />
     <input size="6" maxlength="2" id="trackNumber" value='' placeholder='Track#' />
     <input id="producer" value='' placeholder='Producer' />
-    <input id="genre" value='' placeholder='Genre' />
-    <p id="update_button"><input type="submit" value=Update /></p>    
-  </form>  
+    Genre <select id="genre">
+      <option selected></option>
+      <option>alt-country</option>
+      <option>alternative</option>
+      <option>blues</option>
+      <option>comedy</option>
+      <option>country</option>
+      <option>dance</option>
+      <option>electronic</option>
+      <option>experimental</option>
+      <option>folk</option>
+      <option>house</option>
+      <option>indie</option>
+      <option>jazz</option>
+      <option>latin</option>
+      <option>metal</option>
+      <option>pop</option>
+      <option>psychedelic</option>
+      <option>punk</option>
+      <option>rap</option>
+      <option>r&amp;b</option>
+      <option>reggae</option>
+      <option>rock</option>
+      <option>singer-songwriter</option>
+      <option>soul</option>
+      <option>soundtrack</option>
+      <option>techno</option>
+      <option>vocal</option>
+      <option>world</option>
+    </select>
+    <input type=hidden id="source" />
+    <p id="update_button"><input type="submit" value=Update /></p>
+  </form>
   <table class="read_only"><tr>
-  <td>source</td><td id="source"></td></tr><tr>
   <td>type</td><td id="type"></td></tr><tr>
   <td>caption</td><td id="caption"></td></tr></table>
   <p>open playlist as <a href="/playlists/" target="_blank">JSON</a></p>
 </body>
-<!-- why does this need to go last for the button click to work -->
-<script src=js/jquery.min.js></script>
+<script src=js/uber.js></script>
 <script src=js/h5v.js></script>
 </html>
