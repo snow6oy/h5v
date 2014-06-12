@@ -71,17 +71,11 @@ sub split_filename{
 }
 # @request
 #   {fn=>z,dir=>/x/y,extn=>ogv}
-#   /x/y/www/new.ogv
 # @response
 #   /x/y/done/z.ogv
 # @calledBy Write::mark_as_done
 sub get_done_filename{
-  my $self=shift;
-  my ($f, $wwwFile)=@_;
-  my $isOk=0;
-  my $symlink=CONF->{HOME_DIR}. '/done/'. $f->{filename}. $f->{ext};
-  #print "$newFn\t$symlink\n";
-  return $isOk if(! -f $wwwFile or -f $symlink); # file must exist, link must not
-  return $symlink; # success
+  my ($self, $f)=@_;
+  return CONF->{HOME_DIR}. '/done/'. $f->{filename}. $f->{extn};
 }
 1;

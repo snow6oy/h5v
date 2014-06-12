@@ -125,11 +125,17 @@ window.addEventListener("load", function(){
    */
       u.update(form, function(){
         var r=JSON.parse(this.responseText);
-        if(this.status==200){  // TODO use a switch 200 400 500 etc.
-          document.getElementById('search_results').innerHTML=r.body;
-        }else{
-          document.getElementById('search_results').innerHTML=r.uber.error.data[1].message;
-        }
+        switch(this.status){
+          case 200:
+            document.getElementById('search_results').innerHTML=r.body;
+            break;
+          case 400:
+          case 404:
+          case 405:
+          case 500:
+          default:
+            document.getElementById('search_results').innerHTML=r.uber.error.data[1].message;
+        }        
       });
     }
     if(document.getElementById("submit_button").value=='Promote'){
