@@ -99,10 +99,17 @@ window.addEventListener("load", function(){
   var form=document.getElementById("metadata");
   /*
    * CREATE: Uploader
-   */
   var button=document.getElementById('upload');
   button.addEventListener("click", function (event){
     document.getElementById("submit_button").value="Upload";
+    console.log("ready to upload");
+  });   
+   */
+  var uploadLink=document.getElementById('upload');
+  uploadLink.addEventListener("click", function (event){
+    event.preventDefault();    
+    document.getElementById("submit_button").value="Upload";
+    show("metadata");
     console.log("ready to upload");
   });
   form.addEventListener("submit", function (event){
