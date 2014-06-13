@@ -11,7 +11,7 @@ function uber(url){
     var payload={};
     for(var i=0;i<form.length;i++){
       elem=form.elements[i];
-      if(elem.type!="submit"){ // skip the submit element
+      if(elem.type!="submit" && elem.type!="checkbox"){ // skip the controlling elements
         payload[elem.id]=elem.value;
       }
     }
@@ -51,7 +51,7 @@ function uber(url){
     var payload={};
     for(var i=0;i<form.length;i++){
       elem=form.elements[i];
-      if(elem.type!="submit"){ // skip the submit element
+      if(elem.type!="submit" && elem.type!="checkbox"){ // skip the controlling elements
         payload[elem.id]=elem.value;
       }
     }

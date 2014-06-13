@@ -1,7 +1,6 @@
 /* vids=[{},{},{}] id=0..2 */
 var vids, id;
 var u=new uber('/playlists/');
-//var state="update_metadata";
 /* TODO refactor the API so the client can use "action":"replace" to create H5VTags
  * source, title and caption are all "action":"read"
  * OR just this array from the form.elements[]
@@ -42,7 +41,7 @@ function handler(e){
     }
   }
   updateForm();
-  show("update_metadata");
+  show("metadata");
 }
 function updateForm() {
   var x=window.id; // convenience
@@ -87,7 +86,7 @@ window.addEventListener("load", function(){
         document.getElementById('video_player').innerHTML='<video controls poster='+ this.links.poster.url+ '>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>';
         /* TODO is it null because its hidden?
                 console.log("action link is "+ this.links.add.url);
-        document.querySelector('update_metadata').setAttribute("action", this.links.add.url); */
+        document.querySelector('metadata').setAttribute("action", this.links.add.url); */
         handleLinks();
       }else{ // nuke anything displayed from previous search
         document.getElementById('video_player').innerHTML='';
@@ -97,19 +96,14 @@ window.addEventListener("load", function(){
     });
   });
 
-  var form=document.getElementById("update_metadata");
+  var form=document.getElementById("metadata");
   /*
    * CREATE: Uploader
    */
   var button=document.getElementById('upload');
   button.addEventListener("click", function (event){
-//    document.getElementById("update_metadata").id="promote_metadata";
-    document.getElementById("submit_button").value="Promote";
-//    window.state="promote_metadata"; // cannot rely on form id so use a global var instead
-//    var form=document.getElementById("promote_metadata");
-//    form.addEventListener("submit", function (event){
-//      event.preventDefault();
-    console.log("promoting");
+    document.getElementById("submit_button").value="Upload";
+    console.log("ready to upload");
   });
   form.addEventListener("submit", function (event){
     event.preventDefault();
@@ -138,9 +132,9 @@ window.addEventListener("load", function(){
         }        
       });
     }
-    if(document.getElementById("submit_button").value=='Promote'){
+    if(document.getElementById("submit_button").value=='Upload'){
   /*
-   * CREATE: Promoter
+   * CREATE: Uploader
    */      
       u.create(form, function(){
         var r=JSON.parse(this.responseText);

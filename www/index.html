@@ -2,15 +2,15 @@
 <html lang=en>
   <head>
   <title>dishyzee | music video++</title>
-  <link rel=stylesheet type=text/css href=h5v.css media=screen />
+  <!-- link rel=stylesheet type=text/css href=h5v.css media=screen / -->
 </head>
 <body lang=en>
+  <a href="#lang">en</a>
   <input id="filter" type=text class=query placeholder="Enter search term or leave empty for random" />
   <input id="search" type=button class=button value=Search />
-  <input id="upload" type=button class=button value=Upload />  
   <div id="search_results"></div>
   <figure id="video_player"></figure>
-  <form id="update_metadata" style="display:none">
+  <form id="metadata" style="display:none">
     <input size="30" id="title" value='' placeholder='Title' />
     <input id="artist" value='' placeholder='Artist' />
     <input id="album" value='' placeholder='Album' />
@@ -19,41 +19,32 @@
     <input id="producer" value='' placeholder='Producer' />
     Genre <select id="genre">
       <option selected></option>
-      <option>alt-country</option>
-      <option>alternative</option>
-      <option>blues</option>
-      <option>comedy</option>
-      <option>country</option>
-      <option>dance</option>
-      <option>electronic</option>
-      <option>experimental</option>
-      <option>folk</option>
-      <option>house</option>
-      <option>indie</option>
-      <option>jazz</option>
-      <option>latin</option>
-      <option>metal</option>
-      <option>pop</option>
-      <option>psychedelic</option>
-      <option>punk</option>
-      <option>rap</option>
-      <option>r&amp;b</option>
-      <option>reggae</option>
-      <option>rock</option>
-      <option>singer-songwriter</option>
-      <option>soul</option>
-      <option>soundtrack</option>
-      <option>techno</option>
-      <option>vocal</option>
-      <option>world</option>
+      <option>Alternative</option>
+      <option>Country</option>
+      <option>Classical</option>
+      <option>Dance</option>
+      <option>Hip-Hop</option>
+      <option>Indie</option>
+      <option>Jazz</option>
+      <option>Latin</option>
+      <option>Pop</option>
+      <option>R&amp;B</option>
+      <option>Rap</option>
+      <option>Reggae</option>
+      <option>Rock</option>
+      <option>World</option>
     </select>
     <input type=hidden id="source" />
     <input id="submit_button" type=submit class=button value=Update />
   </form>
-  <table class="read_only"><tr>
-  <td>type</td><td id="type"></td></tr><tr>
-  <td>caption</td><td id="caption"></td></tr></table>
-  <p>open playlist as <a href="/playlists/" target="_blank">JSON</a></p>
+  <p>
+    <input id="upload" type=button class=button value=Upload />
+    <a href="#upload">Upload</a> |
+    <a href="#login">Login</a>
+  </p>
+  <hr><!-- debug -->
+  <div id="type"></div>
+  <div id="caption"></div>
 </body>
 <script src=js/uber.js></script>
 <script src=js/h5v.js></script>
