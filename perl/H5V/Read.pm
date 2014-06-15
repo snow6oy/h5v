@@ -41,7 +41,7 @@ sub search{
   my $videoData=$self->read_video_dir();
   my @videoFiles=keys %{$videoData};
   my @tags=$self->SUPER::get_tags();
-  my @found=();
+  my @found;
   foreach my $f(@videoFiles){
     # not sure if this is needed, won't the search just fail anyway?
     # my $done=$self->check_if_done($f);
@@ -135,6 +135,7 @@ sub find_random{
   # pick a random number
   srand(time);
   my @keys=keys %{$videoData};
+  return {} unless @keys; # otherwise we find an empty dir
   my (@lookups, %found);
   for my $i(0..2){
     my $rndNumber=int(rand(@keys));
