@@ -19,7 +19,21 @@ function uber(url){
     xhr.open('POST', this.homeUrl);
     xhr.onreadystatechange=function(){
       if(this.readyState==4){
-        responseHandler.call(this);
+        var r=JSON.parse(this.responseText);
+        var data={};
+        switch(this.status){
+          case 200:
+          case 201:
+            data=r.body;
+            break;
+          case 400:
+          case 404:
+          case 405:
+          case 500:
+          default:
+            data.error=r.uber.error.data[1].message.error;
+        }        
+        responseHandler.call(data);
       }
     }
     xhr.send(JSON.stringify(payload));    
@@ -40,7 +54,7 @@ function uber(url){
           data.items=flattenItems(response.uber.data[1]);
           responseHandler.call(data);
         }else{
-          console.log("response '"+ this.status+ "' fnarg!");
+          console.log("error handling:'"+ this.status+ "' fnarg!");
           return false;
         }
       }
