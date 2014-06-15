@@ -8,9 +8,6 @@ use constant CONF=>{
   HOME_DIR=>'/opt/git/h5v'             # working dir
 };
 use constant TAGS=>qw(Title Producer Artist Rating Album Genre TrackNumber);
-# 1. inconsitent use of split_filename
-# 2. no way to convert web_to_file
-
 # @calledBy Read::read_video_dir Read::search
 sub get_tags{
   return TAGS;
@@ -19,7 +16,7 @@ sub get_tags{
 sub file_to_web{
   my ($self, $filename)=@_;
   my %webPath;
-  $webPath{Source}=CONF->{SERVICE_URL}. "/video/$filename";
+  $webPath{Source}=CONF->{SERVICE_URL}. "/videos/$filename";
   my $imageFile=$filename;
   $imageFile=~s/\.(.+)$/.jpg/;
   $webPath{Caption}=CONF->{SERVICE_URL}. '/captions/';
@@ -36,7 +33,7 @@ sub web_to_file{
   my $serviceUrl=CONF->{SERVICE_URL}; # better way to use a constant in a regex?
   $webPath=~s/$serviceUrl//;
   my $splitFn=$self->split_filename($webPath);
-  $splitFn->{dir}=CONF->{HOME_DIR}. '/www/video';
+  $splitFn->{dir}=CONF->{HOME_DIR}. '/www/videos';
   return $splitFn;
 }
 # @request
@@ -53,9 +50,9 @@ sub get_done_candidate{
 # @calledBy Read::read_video_dir Write::get_wwwdir_filenames
 sub get_video_filenames{
   my $self=shift;
-  my $videoDir=CONF->{HOME_DIR}. "/www/video";
+  my $videoDir=CONF->{HOME_DIR}. "/www/videos";
   chdir $videoDir;
-  my @files=<*.*>;
+  my @files=<*.mp4>;
   chdir CONF->{HOME_DIR}. '/perl'; # otherwise 'use Blah' will fail
   return {name=>$videoDir, files=>\@files};
 }
@@ -77,5 +74,9 @@ sub split_filename{
 sub get_done_filename{
   my ($self, $f)=@_;
   return CONF->{HOME_DIR}. '/done/'. $f->{filename}. $f->{extn};
+}
+sub get_incoming_filename{
+  my ($self, $f)=@_;
+  return CONF->{HOME_DIR}. '/incoming/'. $f->{filename}. $f->{extn};
 }
 1;
