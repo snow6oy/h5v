@@ -4,14 +4,15 @@
  **/
 class h5vIO {
   function request($content_type, $path, $params, $method) {
-    /* debugger
+    $url=API_URL. "/$path";
+    $header=array('Content-Type:'. $content_type);
+    /* debugger */
       echo '-----------------------------------------------'. "\n";
-      echo $method. ' '. $path. "\n";
+      echo $method. ' '. $url. "\n";
+      echo $header. ' '. "\n\n";
       var_dump($params);
       echo '-----------------------------------------------'. "\n";
-    */
-    $url=API_URL. $path;
-    $header=array('Content-Type:'. $content_type);
+    /**/
     $ch = curl_init(); 
     if (isset($method) and $method=='POST') { 
       curl_setopt($ch, CURLOPT_POST, true);
