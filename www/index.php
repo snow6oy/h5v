@@ -8,32 +8,26 @@ include 'config.php';
 spl_autoload_register('classAutoload');
 // Add exception handler
 set_exception_handler('handleException');
-/**
- * @file
+$request=new Request;
+/*
  * User has successfully authenticated with Twitter. Access tokens saved to session and DB.
- */
+ **/
 session_start();
 require_once('twitteroauth/twitteroauth.php');
-#require_once('config.php');
-
-// Exit with an error message if the config does not define either CONSUMER_KEY or CONSUMER_SECRET
-if (CONSUMER_KEY==='' 
+if(CONSUMER_KEY==='' 
  || CONSUMER_SECRET===''
  || CONSUMER_KEY==='CONSUMER_KEY_HERE'
  || CONSUMER_SECRET === 'CONSUMER_SECRET_HERE'){
   echo 'You need a consumer key and secret to test the sample code. Get one from <a href="https://dev.twitter.com/apps">dev.twitter.com/apps</a>';
-  exit;
+  exit; /* Exit with an error message if the config does not define either CONSUMER_KEY or CONSUMER_SECRET */
 }
-/* moved token check from here to writeUber() */
-/* Get user access tokens out of the session. */
-$access_token=$_SESSION['access_token'];
-/* Create a TwitterOauth object with consumer/user tokens. */
-$connection=new TwitterOAuth(CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']);
-/* If method is set change API call made. Test is called by default. */
-// $content=$connection->get('account/verify_credentials');
-$request=new Request;
-$request->account=$connection->get('account/verify_credentials');
-//$view='TextView'; // default
+if(isset($_SESSION['access_token'])){
+  $access_token=$_SESSION['access_token'];  /* Get user access tokens out of the session. */
+  $connection=new TwitterOAuth(             /* Create a TwitterOauth object with consumer/user tokens. */
+    CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']
+  );
+  $request->account=$connection->get('account/verify_credentials');
+}
 routeV1($request);
 
 function handleException($e) {
