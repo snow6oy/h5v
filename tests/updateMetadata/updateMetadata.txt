@@ -1,0 +1,4 @@
+ok
+ok
+trackNumber:Not an integer for XMP-xmpDM:TrackNumber
+Error opening file

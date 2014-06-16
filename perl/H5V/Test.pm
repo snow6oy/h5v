@@ -7,7 +7,8 @@ use File::Compare;
 sub new{
   my $proto=shift;
   my $class=ref($proto)||$proto;
-  my $self={};
+  my $scriptName=shift;
+  my $self=init($scriptName);
   bless ($self, $class);
   return $self;
 }
@@ -15,9 +16,10 @@ sub new{
 # usage $t->get_before_after($0)
 # relative to BASE_DIR/tests
 # ./selectVideoItem/getVideoItem.pl
-sub get_before_after{
-  my ($self, $scriptName)=@_;
-
+sub init{
+  # my ($self, $scriptName)=@_;
+  my $scriptName=shift;
+  my $self;
   $scriptName=~s#^\./([^/]+)/##;
   my $testGroup=$1;
   $scriptName=~s/\.pl$/.txt/;
@@ -26,9 +28,8 @@ sub get_before_after{
   $self->{AFTER}=$aft;
   unlink $aft; # clear up from previous run
 
-  my $base_dir=$self->conf('BASE_DIR');
-  $self->{BEFORE}=$base_dir. '/tests/'. $testGroup. '/'. $scriptName;
-  return 1;
+  $self->{BEFORE}='/tests/'. $testGroup. '/'. $scriptName;
+  return $self;
 }
 
 sub set_after{
@@ -42,14 +43,20 @@ sub set_after{
 sub cmp_before_after{
   my $self=shift;
   my $aft=$self->{AFTER};
-  my $bfr=$self->{BEFORE};
+  my $base_dir=$self->conf('BASE_DIR');
+  my $bfr=$base_dir. $self->{BEFORE};
   my $result=(compare($aft, $bfr)==0) ? "Ok" : "FAIL" ;
   return $result. "\n";
 }
 
-# expose config
+# expose some parent methods
 sub conf{
   my($self, $param)=@_;
   return $self->SUPER::CONF->{$param};
 }
+sub web_to_file{
+  my($self, $f)=@_;
+  return $self->SUPER::web_to_file($f);
+}
+#
 1;

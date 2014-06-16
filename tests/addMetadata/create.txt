@@ -1,0 +1,4 @@
+$VAR1 = {
+          'location' => 'http://rudy.local/videos/evinhaOya0002.mp4',
+          'status' => 201
+        };

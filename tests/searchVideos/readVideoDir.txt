@@ -1,0 +1,41 @@
+$VAR1 = {
+          'evinhaOya0000.mp4' => {
+                                   'MIMEType' => 'video/mp4',
+                                   'EndUserName' => '',
+                                   'Album' => 'Oya',
+                                   'EndUserID' => '',
+                                   'Genre' => 'family',
+                                   'TrackNumber' => '0',
+                                   'Rating' => '1',
+                                   'Artist' => 'evinha',
+                                   'Title' => 'cat chasing a reflection',
+                                   'Producer' => '',
+                                   'Permissions' => '0'
+                                 },
+          'borisLegoCollection0003.mp4' => {
+                                             'MIMEType' => 'video/mp4',
+                                             'EndUserName' => '',
+                                             'Album' => 'lego collection',
+                                             'EndUserID' => '',
+                                             'Genre' => 'family',
+                                             'TrackNumber' => '4',
+                                             'Rating' => '2',
+                                             'Artist' => 'tank man',
+                                             'Title' => 'a small vehicle of lego',
+                                             'Producer' => 'lego.com',
+                                             'Permissions' => '2'
+                                           },
+          'evinhaOya0001.mp4' => {
+                                   'MIMEType' => 'video/mp4',
+                                   'EndUserName' => 'nature6oy',
+                                   'Album' => 'Oya',
+                                   'EndUserID' => '449230816',
+                                   'Genre' => 'Latin',
+                                   'TrackNumber' => '3',
+                                   'Rating' => '1',
+                                   'Artist' => 'evinha',
+                                   'Title' => 'new video added today',
+                                   'Producer' => '',
+                                   'Permissions' => '0'
+                                 }
+        };

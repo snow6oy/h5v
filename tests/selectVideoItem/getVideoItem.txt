@@ -1,24 +1,24 @@
 $VAR1 = {
           'EndUserName' => '',
-          'Album' => 'Oya',
+          'Album' => 'lego collection',
           'EndUserID' => '',
-          'Genre' => 'Latin',
-          'TrackNumber' => '1',
-          'Rating' => '4',
-          'Artist' => 'evinha',
-          'Title' => 'new template',
-          'Producer' => '',
+          'Genre' => 'family',
+          'TrackNumber' => '4',
+          'Rating' => '2',
+          'Artist' => 'tank man',
+          'Title' => 'a small vehicle of lego',
+          'Producer' => 'lego.com',
           'Permissions' => '2'
         };
 $VAR1 = {
-          'EndUserName' => '',
+          'EndUserName' => 'nature6oy',
           'Album' => 'Oya',
-          'EndUserID' => '',
-          'Genre' => 'family',
+          'EndUserID' => '449230816',
+          'Genre' => 'Latin',
           'TrackNumber' => '0',
           'Rating' => '1',
           'Artist' => 'evinha',
-          'Title' => 'cat chasing a reflection',
+          'Title' => 'Evinha make pop action',
           'Producer' => '',
           'Permissions' => '0'
         };

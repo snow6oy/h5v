@@ -1,0 +1,37 @@
+$VAR1 = [
+          {
+            'error' => 'Search term required'
+          }
+        ];
+$VAR1 = [
+          {
+            'source' => 'http://rudy.local/videos/evinhaOya0000.mp4',
+            'MIMEType' => 'video/mp4',
+            'EndUserName' => '',
+            'Album' => 'Oya',
+            'EndUserID' => '',
+            'Genre' => 'family',
+            'TrackNumber' => '0',
+            'Rating' => '1',
+            'Artist' => 'evinha',
+            'Title' => 'cat chasing a reflection',
+            'caption' => 'http://rudy.local/captions/video-placeholder.png',
+            'Producer' => '',
+            'Permissions' => '0'
+          },
+          {
+            'source' => 'http://rudy.local/videos/evinhaOya0001.mp4',
+            'MIMEType' => 'video/mp4',
+            'EndUserName' => 'nature6oy',
+            'Album' => 'Oya',
+            'EndUserID' => '449230816',
+            'Genre' => 'Latin',
+            'TrackNumber' => '3',
+            'Rating' => '1',
+            'Artist' => 'evinha',
+            'Title' => 'new video added today',
+            'caption' => 'http://rudy.local/captions/video-placeholder.png',
+            'Producer' => '',
+            'Permissions' => '0'
+          }
+        ];

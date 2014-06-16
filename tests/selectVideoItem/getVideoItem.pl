@@ -6,10 +6,8 @@ use H5V::Test;
 use Data::Dumper;
 # use File::Compare;
 my $h5v=H5V::Read->new;
-my $ht=H5V::Test->new;
+my $ht=H5V::Test->new($0);
 my @mp4sToTest=('borisLegoCollection0003.mp4', 'evinhaOya0000.mp4', 'anonDance0000.webm');
-
-$ht->get_before_after($0);
 
 foreach (@mp4sToTest){
   $ht->set_after(Dumper($h5v->read_metadata($_)));

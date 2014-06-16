@@ -4,9 +4,11 @@
 use lib ('/opt/git/h5v/perl', '/home/dishyzee/h5v/perl');
 use H5V::Read;
 use H5V::Write;
+use H5V::Test;
 use Data::Dumper;
 my $h5v=H5V::Write->new;
-
+my $t=H5V::Test->new($0);
+# test data
 $create=[{
   title=>"a small vehicle of lego",
   artist=>"boris",
@@ -39,10 +41,12 @@ $create=[{
   "source"=>"wSJ8H6.mp4"
 }];
 
-# print Dumper $create->[1]; 
 my $json=$h5v->create($create->[2]);
-if($json){
-  print Dumper($json). "\n";
-} else{
-  print "no response\n";
-}
+$t->set_after(Dumper($json));
+print $t->cmp_before_after;
+
+# delete what was created
+# $VAR1 = { 'location' => 'http://rudy.local/videos/evinhaOya0003.mp4', 'status' => 201 };
+my $fn=$t->web_to_file($json->{location});
+
+unlink $fn->{dir}. '/'. $fn->{filename}. $fn->{extn};

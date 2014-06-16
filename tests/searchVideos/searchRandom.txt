@@ -1,0 +1,32 @@
+$VAR1 = [
+          {
+            'source' => 'http://rudy.local/videos/borisLegoCollection0003.mp4',
+            'MIMEType' => 'video/mp4',
+            'EndUserName' => '',
+            'Album' => 'lego collection',
+            'EndUserID' => '',
+            'Genre' => 'family',
+            'TrackNumber' => '4',
+            'Rating' => '2',
+            'Artist' => 'tank man',
+            'Title' => 'a small vehicle of lego',
+            'caption' => 'http://rudy.local/captions/video-placeholder.png',
+            'Producer' => 'lego.com',
+            'Permissions' => '2'
+          },
+          {
+            'source' => 'http://rudy.local/videos/evinhaOya0001.mp4',
+            'MIMEType' => 'video/mp4',
+            'EndUserName' => 'nature6oy',
+            'Album' => 'Oya',
+            'EndUserID' => '449230816',
+            'Genre' => 'Latin',
+            'TrackNumber' => '3',
+            'Rating' => '1',
+            'Artist' => 'evinha',
+            'Title' => 'new video added today',
+            'caption' => 'http://rudy.local/captions/video-placeholder.png',
+            'Producer' => '',
+            'Permissions' => '0'
+          }
+        ];
