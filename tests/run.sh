@@ -13,9 +13,9 @@ else
   echo "unknown user. panic"
   exit
 fi
-#echo $SERVICE_URL
-#echo $API_URL
-#echo $BASE_DIR
+echo $SERVICE_URL
+echo $API_URL
+echo $BASE_DIR
 OPTIONS="
 quit
 ./error.sh
