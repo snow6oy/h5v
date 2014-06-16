@@ -17,7 +17,9 @@ use constant CONF=>{
 #  BASE_DIR=>'/home/dishyzee/h5v'
 };
 # note exif names are Proper Case but H5V names are lowercase
-use constant TAGS=>qw(Title Producer Artist Rating Album Genre TrackNumber Permissions);
+use constant TAGS=>qw(
+  Title Producer Artist Rating Album Genre TrackNumber Permissions EndUserID EndUserName
+);
 # @calledBy Read::read_video_dir Read::search
 sub get_tags{
   return TAGS;

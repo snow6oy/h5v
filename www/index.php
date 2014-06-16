@@ -9,9 +9,6 @@ spl_autoload_register('classAutoload');
 // Add exception handler
 set_exception_handler('handleException');
 $request=new Request;
-/*
- * User has successfully authenticated with Twitter. Access tokens saved to session and DB.
- **/
 session_start();
 require_once('twitteroauth/twitteroauth.php');
 if(CONSUMER_KEY==='' 
@@ -21,12 +18,23 @@ if(CONSUMER_KEY===''
   echo 'You need a consumer key and secret to test the sample code. Get one from <a href="https://dev.twitter.com/apps">dev.twitter.com/apps</a>';
   exit; /* Exit with an error message if the config does not define either CONSUMER_KEY or CONSUMER_SECRET */
 }
-if(isset($_SESSION['access_token'])){
+if(isset($_SESSION['access_token'])){       /* User has successfully authenticated with Twitter. Access tokens saved to session and DB. */
   $access_token=$_SESSION['access_token'];  /* Get user access tokens out of the session. */
   $connection=new TwitterOAuth(             /* Create a TwitterOauth object with consumer/user tokens. */
     CONSUMER_KEY, CONSUMER_SECRET, $access_token['oauth_token'], $access_token['oauth_token_secret']
   );
   $request->account=$connection->get('account/verify_credentials');
+} else{                                     /* Testing only */
+  $account=new stdClass();
+  $account->{'screen_name'}="test6oy";
+  $account->{'profile_image_url'}="http://pbs.twimg.com/profile_images/2284174758/v65oai7fxn47qv9nectx_normal.png";
+  $account->{'id_str'}="449230816";
+  $account->{'name'}="test6oy";
+  $request->account=$account;
+
+  $_SESSION['status']=true;
+  $_SESSION['status']='verified';
+// echo session_id(); print_r($_SESSION); echo "\n------------\n";
 }
 routeV1($request);
 

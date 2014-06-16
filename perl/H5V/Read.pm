@@ -14,6 +14,15 @@ sub new{
   bless ($self, $class);
   return $self;
 }
+sub read_metadata{
+  my ($self, $filename)=@_;
+  my $fn=$self->SUPER::web_to_file($filename);
+  my $exif=Image::ExifTool->new;
+  my @tags=$self->SUPER::get_tags();
+  return($exif->ExtractInfo($fn->{'dir'}. "/$filename")) ?
+    $exif->GetInfo(\@tags) : # get information for all tags in list
+    {'error'=>$exif->GetValue('Error')};
+}
 sub load_anyten{
   my $self=shift;
   my $randomItems=$self->find_random();
@@ -59,14 +68,14 @@ sub search{
 #   {fn=>'filename',ext=>'.mp4'}
 # @response
 #   1=ok or 0=error
-sub check_if_done{
-  my ($self, $splitFn)=@_;
-  my $doneCandidate=$self->SUPER::get_done_candidate($splitFn);
-  $candidate=$doneCandidate->{filename};
-  $success=0;
-  find(\&wanted, $doneCandidate->{dir});
-  return $success;
-}
+#sub check_if_done{
+#  my ($self, $splitFn)=@_;
+#  my $doneCandidate=$self->SUPER::get_done_candidate($splitFn);
+#  $candidate=$doneCandidate->{filename};
+#  $success=0;
+#  find(\&wanted, $doneCandidate->{dir});
+#  return $success;
+#}
 ###############################################################################
 #  open (LOG, ">>/tmp/h5v.log") or die $!;
 #  print LOG $candidate. "\t\t". $success. "\n";
@@ -86,8 +95,8 @@ sub find_random{
     push @lookups, $keys[$rndNumber];
   }
   foreach(@lookups){
-    my $done=$self->check_if_done({filename=>$_});
-    $videoData->{$_}->{Title}='__DONE__' if $done;
+    #my $done=$self->check_if_done({filename=>$_});
+    #$videoData->{$_}->{Title}='__DONE__' if $done;
     $found{$_}=$videoData->{$_};
   }
   return \%found;
@@ -109,6 +118,11 @@ sub read_video_dir{
     $found->{$f}=$e->ImageInfo($videoFile, (@tags, @exifTags));
   }
   return $found;
+}
+# expose config
+sub conf{
+  my($self, $param)=@_;
+  return $self->SUPER::CONF->{$param};
 }
 # private
 # reads and writes to global vars

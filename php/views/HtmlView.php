@@ -18,7 +18,11 @@ HTML;
         $content['id_str']. ' data-name='. 
         $content['name'].  ' data-screen_name='. 
         $content['screen_name']. '></div>'. "\n";
-        // ignore $ok assume it works
+        /*
+         * attempted to pass credential to videos.pl with $_SESSION['dzid'] but no good
+         * so instead we set our own cookie (ignore $ok assume it works)
+         * should be over SSL
+         **/
         $ok=setcookie(
           'dzid',               // name
           $content['id_str'],   // value
@@ -35,9 +39,19 @@ HTML;
     test data
   <a href="/clearsessions.php"><img src="http://pbs.twimg.com/profile_images/2284174758/v65oai7fxn47qv9nectx_normal.png" title="Sign out @nature6oy" alt="photo of signed-in user"></a>
   <div data-screen_name="nature6oy" data-name="nature6oy" data-id_str="449230816" id="twitter_profile"></div>
+
+ 
+  <figure id="video_player"></figure>
 */    
     $body.=<<<HTML
-  <figure id="video_player"></figure>
+<figure id="video_player">
+  <video controls poster=/static/dzlogo.png> 
+    <source src=/cgi-bin/videos.pl/evinhaOya0001.mp4 type=video/mp4> 
+  </video>
+  <figcaption>
+    <a href=/cgi-bin/videos.pl/evinhaOya0000.mp4><img src=/static/captions/video-placeholder.png alt="Security Test"></a>
+  </figcaption>
+</figure>
   <div id="results"></div>
   <div class="inputs" id="datazone" style="display:none">
     <form id="metadata" action>

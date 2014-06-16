@@ -9,3 +9,5 @@ log/
 videos/
 www/cgi-bin
 www/php
+www/static
+static/captions/
