@@ -1,0 +1,27 @@
+$VAR1 = {
+          'EndUserName' => '',
+          'Album' => 'Oya',
+          'EndUserID' => '',
+          'Genre' => 'Latin',
+          'TrackNumber' => '1',
+          'Rating' => '4',
+          'Artist' => 'evinha',
+          'Title' => 'new template',
+          'Producer' => '',
+          'Permissions' => '2'
+        };
+$VAR1 = {
+          'EndUserName' => '',
+          'Album' => 'Oya',
+          'EndUserID' => '',
+          'Genre' => 'family',
+          'TrackNumber' => '0',
+          'Rating' => '1',
+          'Artist' => 'evinha',
+          'Title' => 'cat chasing a reflection',
+          'Producer' => '',
+          'Permissions' => '0'
+        };
+$VAR1 = {
+          'error' => 'Error opening file'
+        };
