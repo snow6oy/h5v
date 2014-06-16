@@ -1,0 +1,11 @@
+perl/.htaccess
+perl/File/
+perl/Image/
+perl/JSON.pm
+perl/JSON/
+perl/env.pl
+incoming/
+log/
+videos/
+www/cgi-bin
+www/php
