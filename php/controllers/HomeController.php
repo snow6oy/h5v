@@ -30,10 +30,10 @@ class HomeController {
         'home', 
         array(
           'addLinks'=>true, /* addLinks triggers a JSON homepage in hypermedia style */
-          'screen_name'=>$request->account->{'screen_name'},
-          'profile_image_url'=>$request->account->{'profile_image_url'}, 
-          'id_str'=>$request->account->{'id_str'},
-          'name'=>$request->account->{'name'}
+          'screen_name'=>@$request->account->{'screen_name'}, /* the @ is to supress warnings in dev */
+          'profile_image_url'=>@$request->account->{'profile_image_url'}, 
+          'id_str'=>@$request->account->{'id_str'},
+          'name'=>@$request->account->{'name'}
         )
       );
   }
