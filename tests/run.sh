@@ -28,6 +28,7 @@ quit
 ./searchVideos/getRandomJson.sh
 ./searchVideos/getSearchJson.sh
 ./selectVideoItem/getVideoItem.sh
+./selectVideoItem/getVideoItem.pl
 ./transferVideo/postVideosMp4.sh
 ./addMetadata/create.pl
 ./addMetadata/postPlaylistsJson.sh
@@ -63,6 +64,8 @@ select opt in $OPTIONS; do
 ./searchVideos/getSearchJson.sh
   elif [ "$opt" = "./selectVideoItem/getVideoItem.sh" ];then
 ./selectVideoItem/getVideoItem.sh
+  elif [ "$opt" = "./selectVideoItem/getVideoItem.pl" ];then
+./selectVideoItem/getVideoItem.pl
   elif [ "$opt" = "./transferVideo/postVideosMp4.sh" ];then
 ./transferVideo/postVideosMp4.sh
   elif [ "$opt" = "./addMetadata/getWwwDirFilenames.pl" ];then
