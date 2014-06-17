@@ -89,7 +89,7 @@ window.addEventListener("load", function(){
         //captions+='<a href="'+ i.href+ '"><img src="'+ i.caption+ '" alt="'+ i.title+ '"></a>';
         //sources+='<source src="'+ i.source+ '" type="'+ i.type+ '">';
       });
-console.log("items "+ this.items.length);
+// console.log("items "+ this.items.length);
       if(this.items.length>0){
         // document.getElementById('video_player').innerHTML='<video controls poster='+ this.links.poster.url+ '>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>';
         document.getElementById('video_player').innerHTML='<video controls poster=/static/captions/small.png>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>';
@@ -203,7 +203,7 @@ function updateForm() {
         if(itemData[i].name==='scope'){
           for(s=0;s<mdat.scope.length;s++){
             if(s==itemData[i].value){
-console.log("scope val"+ s+ itemData[i].value);
+// console.log("scope val"+ s+ itemData[i].value);
               mdat.scope[s].checked=true;
             } else{
               mdat.scope[s].checked=false;

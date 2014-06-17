@@ -37,7 +37,7 @@ function uber(url){
     var data={};
     (filter) ?
       xhr.open('GET', this.homeUrl+ 'search?term='+ filter) :
-      xhr.open('GET', this.homeUrl); // returns a random selection
+      xhr.open('GET', this.homeUrl+ 'search'); // returns a random selection
     xhr.setRequestHeader('Accept', 'application/json');      
     xhr.onreadystatechange=function(){
       if(this.readyState==4){  // readyState 4 means "complete"
