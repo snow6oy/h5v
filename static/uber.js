@@ -63,7 +63,7 @@ function uber(url){
   };
   this.update=function(payload, responseHandler){ // replace metadata
     var xhr=new XMLHttpRequest();
-    xhr.open('PUT', this.homeUrl);
+    xhr.open('PUT', this.homeUrl); /* TODO PUT /videos/:id */
     xhr.setRequestHeader('Accept', 'application/json');
     xhr.onreadystatechange=function(){
       if(this.readyState==4){

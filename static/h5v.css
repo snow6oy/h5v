@@ -30,7 +30,7 @@ input[type=text]{
 #title{ 
   width:280px 
 }
-#rating, #trackNumber { 
+#rating, #track { 
   width:60px 
 }
 /* unnchanged from the original css creted by dudley */ 

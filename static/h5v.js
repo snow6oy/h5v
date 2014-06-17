@@ -1,5 +1,7 @@
 /* vids=[{},{},{}] id=0..2 */
 var vids, id;
+var h5v; // new global to replace window.vids
+         // h5v.items h5v.template h5v.queries h5v.links h5v.item
 var u=new uber('/index.php/');
 /* Event handlers */
 window.onload = function() {
@@ -40,18 +42,18 @@ window.addEventListener("load", function(){
     var reg=new RegExp("^[-]?[0-5]$");    
     return reg.test(rating.value);
   }
-  function trackIsNumber(trackNumber){
+  function trackIsNumber(track){
     var reg=new RegExp("^[0-9]+$");  // any positive integer    
-    return reg.test(trackNumber.value);
+    return reg.test(track.value);
   }
   function getPayload(form){
-    var perms='';     // holds the value of the permissions radio button
+    var scope='';     // holds the value of the scope radio button
     var payload={};   // the entire payload object
     var twitter_profile=document.getElementById('twitter_profile');    
     // radio button
-    for(i=0;i<form.permissions.length; i++){ 
-      if (form.permissions[i].checked){
-          perms=form.permissions[i].value;          
+    for(i=0;i<form.scope.length; i++){ 
+      if (form.scope[i].checked){
+          scope=form.scope[i].value;          
       }
     }
     for(var i=0;i<form.length;i++){
@@ -60,7 +62,7 @@ window.addEventListener("load", function(){
         payload[elem.id]=elem.value;
       }
     }
-    payload['permissions']=perms;
+    payload['scope']=scope;
     payload['tw_id_str']=twitter_profile.getAttribute('data-id_str');
     payload['tw_screen_name']=twitter_profile.getAttribute('data-screen_name');
     return payload;
@@ -71,6 +73,10 @@ window.addEventListener("load", function(){
     var filter=document.getElementById('filter').value;
     u.read(filter, function(){
       window.vids=this.items; // make global for later
+      window.h5v=this;        // h5v is the new global. Watch window.vids your days are numbered!
+      if(!this.links.length){
+        console.log("no links found in cj doc!");
+      }
       var sources=captions='';
       this.items.forEach(function (i){
         sources+='<source src="'+ i.href;
@@ -120,8 +126,8 @@ window.addEventListener("load", function(){
     if(!ratingIsNumber(document.getElementById('rating'))){
       document.getElementById('rating').value=-1; // revert to unrated
     }
-    if(!trackIsNumber(document.getElementById("trackNumber"))){
-      document.getElementById('trackNumber').value=0; // trackNumber='thirteen' will raise a server error
+    if(!trackIsNumber(document.getElementById("track"))){
+      document.getElementById('track').value=0; // track='thirteen' will raise a server error
     }
   /* UPDATE */    
     if(document.getElementById("submit_button").value=='Update'){
@@ -218,7 +224,7 @@ function updateForm() {
     // quick panic! deselect all the radio buttons 
 /*
   }else{
-    // console.log("perms from api "+ window.vids[x].permissions+ "mdat perms len "+mdat.permissions.length); 
+    // console.log("scope from api "+ window.vids[x].scope+ "mdat scope len "+mdat.scope.length); 
     mdat.scope[window.vids[x].scope].checked=true;
   }
 */

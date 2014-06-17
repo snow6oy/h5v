@@ -21,13 +21,13 @@ class JsonView {
     $error=(isset($content['title'])&& $status>=500) ?
       $content['title']. '|'. $content['message'] :
       'Internal Server Error';
-    // set navigational links only for homepage json
+    /* set navigational links only for homepage json
     if(isset($content['addLinks'])&& $content['addLinks']){ // replace the items with links section. if requested
       unset($content['addLinks']); // remove boolean from payload
       $content=$doc['collection']['items']; // swap it out and then put it back .. crazy huh?
     } else{
       unset($doc['collection']['links']);
-    }
+    } */
     // dump header and content based on status
     switch($status){
       case 200:
