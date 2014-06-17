@@ -77,7 +77,7 @@ class JsonView {
       'value'=>""
     );
     $queries=array(
-      "href"=>SERVICE_URL. "/search",
+      "href"=>SERVICE_URL. "/index.php/search",
       "rel"=>"search",
       "prompt"=>"Enter search term or empty for random",
       "data"=>array($qdata)
@@ -91,27 +91,25 @@ class JsonView {
       array("name"=>"producer", "prompt"=>"Producer"),
       array("name"=>"rating",   "prompt"=>"Rating"),
       array("name"=>"scope",    "prompt"=>"Shared With"),
-      array("name"=>"type")
+      array("name"=>"mediatype","prompt"=>"Media Type")
     );
-    $template=array("data"=>array($tdata));
     $ldata=array(
-      array("href"=>SERVICE_URL. "/", "rel"=> "self", "render"=> "link"),
-      array("href"=>SERVICE_URL. "/", "rel"=> "index", "prompt"=> "View Homepage", "render"=> "link"),
-      array("href"=>SERVICE_URL. "/videos", "rel"=> "upload", "prompt"=> "Upload Video", "render"=> "image"),
-      array("href"=>SERVICE_URL. "/videos", "rel"=> "edit", "prompt"=> "Create Video Metadata", "render"=> "link"),
-      array("href"=>SERVICE_URL. "/videos/:id", "rel"=> "item", "prompt"=> "View Video", "render"=> "image"),
-      array("href"=>SERVICE_URL. "/videos/:id", "rel"=> "item", "prompt"=> "View Video Page", "render"=> "link"),
-      array("href"=>SERVICE_URL. "/videos/:id", "rel"=> "edit", "prompt"=> "Edit Video Metadata", "render"=> "link"),
-      array("href"=>SERVICE_URL. "/videos/:id", "rel"=> "delete", "prompt"=> "Remove Video From View", "render"=> "link"),
-      array("href"=>SERVICE_URL. "/captions/:id", "rel"=> "caption", "prompt"=> "View Video Caption", "render"=> "image")
+      array("href"=>SERVICE_URL. "/",                      "rel"=> "self",    "prompt"=> "Home",                  "render"=> "link"),
+      array("href"=>SERVICE_URL. "/",                      "rel"=> "index",   "prompt"=> "View Homepage",         "render"=> "link"),
+      array("href"=>SERVICE_URL. "/index.php/videos",      "rel"=> "upload",  "prompt"=> "Upload Video",          "render"=> "image"),
+      array("href"=>SERVICE_URL. "/index.php/videos",      "rel"=> "edit",    "prompt"=> "Create Video Metadata", "render"=> "link"),
+      array("href"=>SERVICE_URL. "/index.php/videos/{id}", "rel"=> "item",    "prompt"=> "View Video",            "render"=> "image"),
+      array("href"=>SERVICE_URL. "/index.php/videos/{id}", "rel"=> "item",    "prompt"=> "View Video Page",       "render"=> "link"),
+      array("href"=>SERVICE_URL. "/index.php/videos/{id}", "rel"=> "edit",    "prompt"=> "Edit Video Metadata",   "render"=> "link"),
+      array("href"=>SERVICE_URL. "/index.php/videos/{id}", "rel"=> "delete",  "prompt"=> "Remove Video From View","render"=> "link"),
+      array("href"=>SERVICE_URL. "/captions/{id}",         "rel"=> "caption", "prompt"=> "View Video Caption",    "render"=> "image")
     );
-    $items=array("links"=>array($ldata));
     return array('collection'=> 
       array(
         "version"=>"1.0",
         "href"=>SERVICE_URL. "/",
-        'items'=>array($items),
-        'template'=>array($template),
+        'links'=>$ldata,
+        'template'=>array("data"=>$tdata),
         'queries'=>array($queries)        
       ),
     );

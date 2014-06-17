@@ -28,11 +28,11 @@ sub get_tags{
 sub file_to_web{
   my ($self, $filename)=@_;
   my %webPath;
-  $webPath{source}=CONF->{SERVICE_URL}. "/videos/$filename";
+  $webPath{source}=CONF->{SERVICE_URL}. "/cgi-bin/videos.pl/$filename";
   my $imageFile=$filename;
   $imageFile=~s/\.(.+)$/.png/;
-  $webPath{caption}=CONF->{SERVICE_URL}. '/captions/';
-  $webPath{caption}.=(-f CONF->{BASE_DIR}. '/www/captions/'. $imageFile) ? $imageFile : 'video-placeholder.png';
+  $webPath{caption}=CONF->{SERVICE_URL}. '/static/captions/';
+  $webPath{caption}.=(-f CONF->{BASE_DIR}. '/www/static/captions/'. $imageFile) ? $imageFile : 'video-placeholder.png';
   return \%webPath;
 }
 # @request

@@ -10,4 +10,9 @@ videos/
 www/cgi-bin
 www/php
 www/static
+www/doc
 static/captions/
+doc/README.md
+doc/cjlib.css
+doc/cjlib.js
+doc/index.html

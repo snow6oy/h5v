@@ -6,13 +6,13 @@ class h5vIO {
   function request($content_type, $path, $params, $method) {
     $url=API_URL. "/$path";
     $header=array('Content-Type:'. $content_type);
-    /* debugger */
+    /* debugger 
       echo '-----------------------------------------------'. "\n";
       echo $method. ' '. $url. "\n";
       echo $header. ' '. "\n\n";
       var_dump($params);
       echo '-----------------------------------------------'. "\n";
-    /**/
+    */
     $ch = curl_init(); 
     if (isset($method) and $method=='POST') { 
       curl_setopt($ch, CURLOPT_POST, true);
@@ -102,6 +102,7 @@ class h5vIO {
       }
     }
     $item=(array("href"=>$href, "data"=>$data, "links"=>$links));
+    //$item=(array("href"=>'/cgi-bin/videos.pl/evinhaOya0001.mp4', "data"=>$data, "links"=>$links));
     return $item;
   }  
 }

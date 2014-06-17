@@ -40,10 +40,6 @@ HTML;
   <a href="/clearsessions.php"><img src="http://pbs.twimg.com/profile_images/2284174758/v65oai7fxn47qv9nectx_normal.png" title="Sign out @nature6oy" alt="photo of signed-in user"></a>
   <div data-screen_name="nature6oy" data-name="nature6oy" data-id_str="449230816" id="twitter_profile"></div>
 
- 
-  <figure id="video_player"></figure>
-*/    
-    $body.=<<<HTML
 <figure id="video_player">
   <video controls poster=/static/dzlogo.png> 
     <source src=/cgi-bin/videos.pl/evinhaOya0001.mp4 type=video/mp4> 
@@ -52,6 +48,10 @@ HTML;
     <a href=/cgi-bin/videos.pl/evinhaOya0000.mp4><img src=/static/captions/video-placeholder.png alt="Security Test"></a>
   </figcaption>
 </figure>
+ 
+*/    
+    $body.=<<<HTML
+  <figure id="video_player"></figure>
   <div id="results"></div>
   <div class="inputs" id="datazone" style="display:none">
     <form id="metadata" action>
@@ -77,14 +77,14 @@ HTML;
       <input id="album" value="" placeholder=Album />
       <input id="producer" value="" placeholder=Producer />
       <input maxlength="2" id="rating" value="" placeholder=Rating />
-      <input maxlength="2" id="trackNumber" value="" placeholder=Track# />
+      <input maxlength="2" id="track" value="" placeholder=Track# />
       <input type=hidden id="source" />
       <!-- add filename as source here -->
       <input id="submit_button" type=submit class=button value=Update />
       Shared with
-      <input type=radio name="permissions" value=0 /> Nobody
-      <input type=radio name="permissions" value=1 style="display:none" />  <!-- Followers -->
-      <input type=radio name="permissions" value=2 checked /> Everyone
+      <input type=radio name=scope id=scope value=0 /> Nobody
+      <input type=radio name=scope id=scope value=1 style="display:none" />  <!-- Followers -->
+      <input type=radio name=scope id=scope value=2 /> Everyone
     </form>
   </div>
   <div class="inputs" id="dropzone" style="display:none">
