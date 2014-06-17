@@ -1,6 +1,6 @@
 /* vids=[{},{},{}] id=0..2 */
 var vids, id;
-var u=new uber('/index.php/videos/');
+var u=new uber('/index.php/');
 /* Event handlers */
 window.onload = function() {
   var dropzone = document.getElementById("dropzone");
@@ -73,11 +73,26 @@ window.addEventListener("load", function(){
       window.vids=this.items; // make global for later
       var sources=captions='';
       this.items.forEach(function (i){
-        sources+='<source src="'+ i.source+ '" type="'+ i.type+ '">';
-        captions+='<a href="'+ i.source+ '"><img src="'+ i.caption+ '" alt="'+ i.title+ '"></a>';
+        sources+='<source src="'+ i.href;
+        captions+='<a href="'+ i.href;
+
+        i.data.forEach(function (d) {
+          // console.log("name:"+ d.name);
+          if(d.name === 'type'){
+            //console.log("type src:"+ d.value+ ':'+ i.href);
+            sources+='" type="'+ d.value+ '">';
+            captions+='"><img src="/static/captions/video-placeholder.jpg" alt="TITLE"></a>';
+            // captions+='"><img src="'+ i.caption+ '" alt="'+ i.title+ '"></a>';
+          }
+        });
+   
+        //captions+='<a href="'+ i.href+ '"><img src="'+ i.caption+ '" alt="'+ i.title+ '"></a>';
+        //sources+='<source src="'+ i.source+ '" type="'+ i.type+ '">';
       });
+console.log("items "+ this.items.length);
       if(this.items.length>0){
-        document.getElementById('video_player').innerHTML='<video controls poster='+ this.links.poster.url+ '>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>';
+        // document.getElementById('video_player').innerHTML='<video controls poster='+ this.links.poster.url+ '>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>';
+        document.getElementById('video_player').innerHTML='<video controls poster=/static/captions/small.png>'+ sources+ '</video>'+ '<figcaption>'+ captions+ '</figcaption>';
         /* TODO is it null because its hidden?
                 console.log("action link is "+ this.links.add.url);
         document.querySelector('metadata').setAttribute("action", this.links.add.url); */
@@ -166,7 +181,7 @@ function handler(e){
   video.play();
   /* lookup the selected vid using the href as a key */
   for (var i=0;i<window.vids.length;i++) {
-    if (window.vids[i].source==videotarget) {
+    if (window.vids[i].href==videotarget) {
       window.id=i; // store the index to lookup vid attributes later
     }
   }
@@ -177,22 +192,36 @@ function handler(e){
 function updateForm() {
   var x=window.id; // convenience
   var mdat=document.getElementById('metadata');
-  for(var i=0;i<mdat.length;i++){
-    elem=mdat.elements[i];
-    if(elem.id&&elem.type!="submit"){ // skip the controlling elements
-      document.getElementById(elem.id).value=window.vids[x][elem.id];
+  var itemData=window.vids[x].data;
+// console.log("mdat="+ mdat.length+ ' window.id='+ x+ ' data len='+ items.length);
+  for(var m=0;m<mdat.length;m++){
+    elem=mdat.elements[m];
+//console.log("elem "+ m+ ' '+ elem.id);
+    for(var i=0;i<itemData.length;i++){
+      if(elem.id===itemData[i].name){
+      // console.log("elem "+ i+ ' '+ itemData[i].name+ ':'+ itemData[i].value);
+        if(itemData[i].name==='scope'){
+          for(s=0;s<mdat.scope.length;s++){
+            if(s==itemData[i].value){
+console.log("scope val"+ s+ itemData[i].value);
+              mdat.scope[s].checked=true;
+            } else{
+              mdat.scope[s].checked=false;
+            }
+          }
+        } else{
+          document.getElementById(elem.id).value=itemData[i].value;
+        }
+      }
     }
   }
-  if(!window.vids[x].permissions){
-    console.log("warning: no permissions set");
-    /* quick panic! deselect all the radio buttons */
-    for(i=0;i<mdat.permissions.length;i++){
-      mdat.permissions[i].checked=false;
-    }
+    // quick panic! deselect all the radio buttons 
+/*
   }else{
-    /* console.log("perms from api "+ window.vids[x].permissions+ "mdat perms len "+mdat.permissions.length); */
-    mdat.permissions[window.vids[x].permissions].checked=true;
+    // console.log("perms from api "+ window.vids[x].permissions+ "mdat perms len "+mdat.permissions.length); 
+    mdat.scope[window.vids[x].scope].checked=true;
   }
+*/
   // we maintain state for the data-foo placholders. but we never access them. Why?
   var file=document.getElementById('fileData');
   file.dataset.type=window.vids[x].type;

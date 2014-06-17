@@ -44,8 +44,10 @@ function uber(url){
         if(this.status==200){  // TODO use a switch 200 400 500 etc.
           response=JSON.parse(xhr.responseText);
           // add version too ..
-          data.links=flattenLinks(response.uber.data[0]);
-          data.items=flattenItems(response.uber.data[1]);
+          // data.links=flattenLinks(response.uber.data[0]);
+          // data.items=flattenItems(response.uber.data[1]);
+          data.links=response.collection.links;
+          data.items=response.collection.items;
           responseHandler.call(data);
         }else{
           console.log("error: "+ this.status+ " when searching for '"+ filter+ "'");
