@@ -9,7 +9,7 @@ my %m=(
  addControl=>{id=>'add', rel=>'add', name=>'links', url=>'/playlists/', action=>'append', model=>'term={text}'},
  filterControl=>{id=>'search', rel=>'search', name=>'links', url=>'/playlists/search', action=>'read', model=>'?term={text}'},
  listControl=>{id=>'list', rel=>'collection', name=>'links', url=>'/playlists/', action=>'read'},
- posterControl=>{id=>'poster', rel=>'icon', url=>'http://h5v.fnarg.net/images/dzlogo.png', action=>'read'},
+ posterControl=>{id=>'poster', rel=>'icon', url=>'/images/dzlogo.png', action=>'read'},
 );
 # global vars required by File::Find
 my $candidate;

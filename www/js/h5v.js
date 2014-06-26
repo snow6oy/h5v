@@ -1,67 +1,32 @@
 /* vids=[{},{},{}] id=0..2 */
 var vids, id;
 var u=new uber('/playlists/');
-/* TODO refactor the API so the client can use "action":"replace" to create H5VTags
- * source, title and caption are all "action":"read"
- * OR just this array from the form.elements[]
- **/
-var h5vTags=["source","title","artist","album","rating","trackNumber","producer","genre"];
-
-function show(elementID){(
-  function(style){style.display='block';})(document.getElementById(elementID).style);
-}
-function hide(elementID){(
-  function(style){style.display='none';})(document.getElementById(elementID).style);
-}
-function handleLinks(){
-  var video_player=document.getElementById('video_player');
-  var links=video_player.getElementsByTagName('a');
-  for(var i=0;i<links.length;i++){
-    links[i].onclick=handler;
+/* Event handlers */
+window.onload = function() {
+  var dropzone = document.getElementById("dropzone");
+  dropzone.ondragover=dropzone.ondragenter=function(event){
+    event.stopPropagation();
+    event.preventDefault();
   }
-}
-function handler(e){
-  e.preventDefault(); // don't follow the a tag
-  videotarget=this.getAttribute("href");
-  filename=videotarget.substr(0,videotarget.lastIndexOf('.'))||videotarget;
-  video=document.querySelector("#video_player video");
-  /*
-  video.removeAttribute("controls");
-  video.setAttribute("poster","file:///C:/Users/gavinj/github/vplayer/www/images/video-placeholder.jpg");
-  */
-  source=document.querySelectorAll("#video_player video source");
-  source[0].src=filename+".mp4";
-  /* source[1].src=filename+".webm"; Exiftool can't update webm */
-  video.load();
-  video.play();
-  /* lookup the selected vid using the href as a key */
-  for (var i=0;i<window.vids.length;i++) {
-    if (window.vids[i].source==videotarget) {
-      window.id=i; // store the index to lookup vid attributes later
+  /* File object has these properties
+   * .name: the file name (it does not include path information)
+   * .type: the MIME type, e.g. image/jpeg, text/plain, etc.
+   * .size: the file size in bytes
+   **/
+  dropzone.ondrop = function(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    var upFile=event.dataTransfer.files[0]; // ignore any subsequent drops
+//    if(upFile.type.indexOf("video")==0 && upFile.size>1048576 && upFile.size<104857600){
+    if(upFile.type=='video/mp4' && upFile.size>0 && upFile.size<8566470){
+    /*  console.log("about to send:"+ upFile.name);
+      console.log("type:"+ + " bytes:"+ upFile.size); */
+      sendFile(upFile);
+    }else{
+      alert(upFile.name+ " is not valid.\nMust be an MP4 and smaller than 8 megabytes.")
     }
   }
-  updateForm();
-  hide("dropzone");  
-  show("datazone");
 }
-function updateForm() {
-  var x=window.id; // convenience
-  // but what about the placholders?
-  for(var i=0;i<h5vTags.length;i++){
-    // console.log("mdat form "+ h5vTags[i]+ ':'+ val);
-    document.getElementById(h5vTags[i]).value=window.vids[x][h5vTags[i]];
-  }
-  // source is in both h5vTags and below .. might need to sort it out later
-  // to avoid it being clobbered it goes after the loop
-  // source has moved to <form metadata>
-  /* document.getElementById('source').innerHTML=window.vids[x].source;
-  document.getElementById('type').innerHTML=;
-  document.getElementById('caption').innerHTML=;  */
-  var file=document.getElementById('fileData');
-  file.dataset.type=window.vids[x].type;
-  file.dataset.name=window.vids[x].caption;
-}
-
 window.addEventListener("load", function(){
   // allowed values: [-1..5]    well ok -5 should not be allowed but it is *shrug*
   function ratingIsNumber(rating){
@@ -73,10 +38,7 @@ window.addEventListener("load", function(){
     var reg=new RegExp("^[0-9]+$");  // any positive integer    
     return reg.test(trackNumber.value);
   }
-
-  /*
-   * READ
-   */
+  /* READ */
   var button=document.getElementById('search');
   button.addEventListener("click", function (event){
     var filter=document.getElementById('filter').value;
@@ -104,14 +66,7 @@ window.addEventListener("load", function(){
     });
   });
   var form=document.getElementById("metadata");
-  /*
-   * CREATE: Uploader
-  var button=document.getElementById('upload');
-  button.addEventListener("click", function (event){
-    document.getElementById("submit_button").value="Upload";
-    console.log("ready to upload");
-  });   
-   */
+  /* CREATE: Uploader */
   var uploadLink=document.getElementById('upload');
   uploadLink.addEventListener("click", function (event){
     event.preventDefault();    
@@ -126,10 +81,8 @@ window.addEventListener("load", function(){
     if(! trackIsNumber(document.getElementById("trackNumber"))){
       document.getElementById('trackNumber').value=0; // trackNumber='thirteen' will raise a server error
     }
+  /* UPDATE */    
     if(document.getElementById("submit_button").value=='Update'){
-  /* 
-   * UPDATE
-   */
       u.update(form, function(){
         var r=JSON.parse(this.responseText);
         switch(this.status){
@@ -147,9 +100,7 @@ window.addEventListener("load", function(){
       });
     }
     if(document.getElementById("submit_button").value=='Upload'){
-  /*
-   * CREATE: Uploader
-   */      
+  /* CREATE: Uploader */      
       u.create(form, function(){
         if(this.error){
           document.getElementById('results').innerHTML=this.error;          
@@ -160,15 +111,59 @@ window.addEventListener("load", function(){
     }
   });
 });
-/* Uploader
- * 1. on clicking [Upload] show dropzone
- * 2. receive and validate dropped file to browser (must be mp4 between 1 and 100MB)
- * 3. POST /up/loader.php
- * 4. read {location::id} apply :id and show metadata form
- * 5. receive metadata input. validate (title, genre and artist = required)
- * 6. update new upload and mark as "done" for searching 
- * https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications#Creating_the_upload_tasks 
- **/
+
+/* toggle display of page elements */
+function show(elementID){(
+  function(style){style.display='block';})(document.getElementById(elementID).style);
+}
+function hide(elementID){(
+  function(style){style.display='none';})(document.getElementById(elementID).style);
+}
+/* events triggered from video list */
+function handleLinks(){
+  var video_player=document.getElementById('video_player');
+  var links=video_player.getElementsByTagName('a');
+  for(var i=0;i<links.length;i++){
+    links[i].onclick=handler;
+  }
+}
+function handler(e){
+  e.preventDefault(); // don't follow the a tag
+  videotarget=this.getAttribute("href");
+  filename=videotarget.substr(0,videotarget.lastIndexOf('.'))||videotarget;
+  video=document.querySelector("#video_player video");
+  /*  video.removeAttribute("controls");
+      video.setAttribute("poster","/images/video-placeholder.jpg"); */
+  source=document.querySelectorAll("#video_player video source");
+  source[0].src=filename+".mp4";
+  /* source[1].src=filename+".webm"; Exiftool can't update webm */
+  video.load();
+  video.play();
+  /* lookup the selected vid using the href as a key */
+  for (var i=0;i<window.vids.length;i++) {
+    if (window.vids[i].source==videotarget) {
+      window.id=i; // store the index to lookup vid attributes later
+    }
+  }
+  updateForm();
+  hide("dropzone");  
+  show("datazone");
+}
+function updateForm() {
+  var x=window.id; // convenience
+  var mdat=document.getElementById('metadata');
+  for(var i=0;i<mdat.length;i++){
+    elem=mdat.elements[i];
+    if(elem.type!="submit" && elem.type!="checkbox"){ // skip the controlling elements
+      document.getElementById(elem.id).value=window.vids[x][elem.id];
+    }
+  }
+  // we maintain state for the data-foo placholders. but we never access them. Why?
+  var file=document.getElementById('fileData');
+  file.dataset.type=window.vids[x].type;
+  file.dataset.name=window.vids[x].caption;
+}
+
 function sendFile(file) {
   var uri="/videos/";  // PHP script, shhh!
   var xhr=new XMLHttpRequest();
@@ -199,29 +194,4 @@ function sendFile(file) {
   };
   fd.append('myFile', file);
   xhr.send(fd); // Initiate a multipart/form-data upload
-}
-window.onload = function() {
-  var dropzone = document.getElementById("dropzone");
-  dropzone.ondragover=dropzone.ondragenter=function(event){
-    event.stopPropagation();
-    event.preventDefault();
-  }
-  /* File object has these properties
-   * .name: the file name (it does not include path information)
-   * .type: the MIME type, e.g. image/jpeg, text/plain, etc.
-   * .size: the file size in bytes
-   **/
-  dropzone.ondrop = function(event) {
-    event.stopPropagation();
-    event.preventDefault();
-    var upFile=event.dataTransfer.files[0]; // ignore any subsequent drops
-//    if(upFile.type.indexOf("video")==0 && upFile.size>1048576 && upFile.size<104857600){
-    if(upFile.type=='video/mp4' && upFile.size>0 && upFile.size<8566470){
-    /*  console.log("about to send:"+ upFile.name);
-      console.log("type:"+ + " bytes:"+ upFile.size); */
-      sendFile(upFile);
-    }else{
-      alert(upFile.name+ " is not valid.\nMust be an MP4 and smaller than 8 megabytes.")
-    }
-  }
 }
