@@ -49,6 +49,11 @@ sub update_metadata{
     $src=$splitFn->{dir}. '/'. $splitFn->{filename}. $splitFn->{extn};    
   }
   logger($src, $dst, "\n");
+  # create EndUser tag as an XMP:struct ~phil/exiftool/TagNames/XMP.html#EndUser
+  my $endUser={};
+  $endUser->{EndUserID}=delete($mdat->{tw_id_str});
+  $endUser->{EndUserName}=delete($mdat->{tw_screen_name});
+  $mdat->{'XMP:EndUser'}=$endUser;
   my $exif=Image::ExifTool->new;
   #set new values for each given tag
   foreach my $tag(keys %{$mdat}){

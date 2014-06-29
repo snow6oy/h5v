@@ -16,14 +16,20 @@ window.onload = function() {
   dropzone.ondrop = function(event) {
     event.stopPropagation();
     event.preventDefault();
-    var upFile=event.dataTransfer.files[0]; // ignore any subsequent drops
-//    if(upFile.type.indexOf("video")==0 && upFile.size>1048576 && upFile.size<104857600){
-    if(upFile.type=='video/mp4' && upFile.size>0 && upFile.size<8566470){
-    /*  console.log("about to send:"+ upFile.name);
-      console.log("type:"+ + " bytes:"+ upFile.size); */
-      sendFile(upFile);
+    var twitter_profile=document.getElementById('twitter_profile');
+    if(twitter_profile){
+      var upFilename=twitter_profile.getAttribute('data-id_str');
+      var upFile=event.dataTransfer.files[0]; // ignore any subsequent drops
+  //    if(upFile.type.indexOf("video")==0 && upFile.size>1048576 && upFile.size<104857600){
+      if(upFile.type=='video/mp4' && upFile.size>0 && upFile.size<8566470){
+      /*  console.log("about to send:"+ upFile.name);
+        console.log("type:"+ + " bytes:"+ upFile.size); */
+        sendFile(upFilename, upFile);
+      }else{
+        alert(upFile.name+ " is not valid.\nMust be an MP4 and smaller than 8 megabytes");
+      }
     }else{
-      alert(upFile.name+ " is not valid.\nMust be an MP4 and smaller than 8 megabytes.")
+      alert("You need to sign-in to upload");
     }
   }
 }
@@ -37,6 +43,27 @@ window.addEventListener("load", function(){
   function trackIsNumber(trackNumber){
     var reg=new RegExp("^[0-9]+$");  // any positive integer    
     return reg.test(trackNumber.value);
+  }
+  function getPayload(form){
+    var perms='';     // holds the value of the permissions radio button
+    var payload={};   // the entire payload object
+    var twitter_profile=document.getElementById('twitter_profile');    
+    // radio button
+    for(i=0;i<form.permissions.length; i++){ 
+      if (form.permissions[i].checked){
+          perms=form.permissions[i].value;          
+      }
+    }
+    for(var i=0;i<form.length;i++){
+      elem=form.elements[i];
+      if(elem.id&&elem.type!="submit"){ // skip the controlling elements
+        payload[elem.id]=elem.value;
+      }
+    }
+    payload['permissions']=perms;
+    payload['tw_id_str']=twitter_profile.getAttribute('data-id_str');
+    payload['tw_screen_name']=twitter_profile.getAttribute('data-screen_name');
+    return payload;
   }
   /* READ */
   var button=document.getElementById('search');
@@ -75,25 +102,20 @@ window.addEventListener("load", function(){
   });
   form.addEventListener("submit", function (event){
     event.preventDefault();
-    if(! ratingIsNumber(document.getElementById('rating'))){
+    if(!ratingIsNumber(document.getElementById('rating'))){
       document.getElementById('rating').value=-1; // revert to unrated
     }
-    if(! trackIsNumber(document.getElementById("trackNumber"))){
+    if(!trackIsNumber(document.getElementById("trackNumber"))){
       document.getElementById('trackNumber').value=0; // trackNumber='thirteen' will raise a server error
     }
   /* UPDATE */    
     if(document.getElementById("submit_button").value=='Update'){
-      u.update(form, function(){
+      u.update(getPayload(form), function(){
         var r=JSON.parse(this.responseText);
         switch(this.status){
           case 200:
-            document.getElementById('results').innerHTML=r.body;
+            document.getElementById('results').innerHTML=r.status;
             break;
-          case 201:
-          case 400:
-          case 404:
-          case 405:
-          case 500:
           default:
             document.getElementById('results').innerHTML=r.uber.error.data[1].message;
         }        
@@ -101,7 +123,7 @@ window.addEventListener("load", function(){
     }
     if(document.getElementById("submit_button").value=='Upload'){
   /* CREATE: Uploader */      
-      u.create(form, function(){
+      u.create(getPayload(form), function(){
         if(this.error){
           document.getElementById('results').innerHTML=this.error;          
         }else{
@@ -154,9 +176,19 @@ function updateForm() {
   var mdat=document.getElementById('metadata');
   for(var i=0;i<mdat.length;i++){
     elem=mdat.elements[i];
-    if(elem.type!="submit" && elem.type!="checkbox"){ // skip the controlling elements
+    if(elem.id&&elem.type!="submit"){ // skip the controlling elements
       document.getElementById(elem.id).value=window.vids[x][elem.id];
     }
+  }
+  if(!window.vids[x].permissions){
+    console.log("warning: no permissions set");
+    /* quick panic! deselect all the radio buttons */
+    for(i=0;i<mdat.permissions.length;i++){
+      mdat.permissions[i].checked=false;
+    }
+  }else{
+    /* console.log("perms from api "+ window.vids[x].permissions+ "mdat perms len "+mdat.permissions.length); */
+    mdat.permissions[window.vids[x].permissions].checked=true;
   }
   // we maintain state for the data-foo placholders. but we never access them. Why?
   var file=document.getElementById('fileData');
@@ -164,15 +196,15 @@ function updateForm() {
   file.dataset.name=window.vids[x].caption;
 }
 
-function sendFile(file) {
-  var uri="/videos/";  // PHP script, shhh!
+function sendFile(fileName, file) {
+  var uri="/videos/";
   var xhr=new XMLHttpRequest();
   var fd=new FormData();
   xhr.open("POST", uri, true);
   xhr.onreadystatechange=function(){
     if(xhr.readyState==4){
       var r=JSON.parse(xhr.responseText);
-      if(xhr.status==201){
+      if(xhr.status==202){
         show("datazone");
   //      console.log("ready to add metadata");
   /* TODO replace window.vids and hidden form elements with dataset        */
@@ -192,6 +224,6 @@ function sendFile(file) {
       }
     }
   };
-  fd.append('myFile', file);
+  fd.append(fileName, file);
   xhr.send(fd); // Initiate a multipart/form-data upload
 }

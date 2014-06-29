@@ -7,7 +7,7 @@ use constant CONF=>{
   SERVICE_URL=>'http://h5v.fnarg.net', # web root
   HOME_DIR=>'/opt/git/h5v'             # working dir
 };
-use constant TAGS=>qw(Title Producer Artist Rating Album Genre TrackNumber);
+use constant TAGS=>qw(Title Producer Artist Rating Album Genre TrackNumber Permissions);
 # @calledBy Read::read_video_dir Read::search
 sub get_tags{
   return TAGS;

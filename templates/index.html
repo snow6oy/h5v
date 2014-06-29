@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang=en>
+  <head>
+  <title>dishyzee | music video++</title>
+  <link rel=stylesheet type=text/css href=/h5v.css media=screen />
+</head>
+<body lang=en>
+  <a href="#lang">en</a>
+  <input id="filter" type=text class=query placeholder="Enter search term or leave empty for random" />
+  <input id="search" type=button class=button value=Search />
+  <input id="upload" type=button class=button value=Upload />
+  <?php 
+if(isset($content->{'screen_name'})){
+    echo '<a href="/clearsessions.php"><img alt="photo of signed-in user" title="Sign out @'. 
+    $content->{'screen_name'}.'" src="'. 
+    $content->{'profile_image_url'}. '"/></a><div id="twitter_profile" data-id_str='. 
+    $content->{'id_str'}. ' data-name='. 
+    $content->{'name'}.  ' data-screen_name='. 
+    $content->{'screen_name'}. '></div>'. "\n";  
+}else{
+  echo $content;
+}
+?>
+  <figure id="video_player"></figure>
+  <div id="results"></div>
+  <div class="inputs" id="datazone" style="display:none">
+    <form id="metadata" action>
+      <input id="title" value="" placeholder=Title />
+      <input id="artist" value="" placeholder=Artist />
+      Genre <select id="genre">
+        <option selected></option>
+        <option>Alternative</option>
+        <option>Country</option>
+        <option>Classical</option>
+        <option>Dance</option>
+        <option>Hip-Hop</option>
+        <option>Indie</option>
+        <option>Jazz</option>
+        <option>Latin</option>
+        <option>Pop</option>
+        <option>R&amp;B</option>
+        <option>Rap</option>
+        <option>Reggae</option>
+        <option>Rock</option>
+        <option>World</option>
+      </select>
+      <input id="album" value="" placeholder=Album />
+      <input id="producer" value="" placeholder=Producer />
+      <input maxlength="2" id="rating" value="" placeholder=Rating />
+      <input maxlength="2" id="trackNumber" value="" placeholder=Track# />
+      <input type=hidden id="source" />
+      <!-- add filename as source here -->
+      <input id="submit_button" type=submit class=button value=Update />
+      Shared with
+      <input type=radio name="permissions" value=0 /> Nobody
+      <input type=radio name="permissions" value=1 style="display:none" />  <!-- Followers -->
+      <input type=radio name="permissions" value=2 checked /> Everyone
+    </form>
+  </div>
+  <div class="inputs" id="dropzone" style="display:none">
+    Drag-n-drop your MP4 here
+  </div>
+  <!-- remmber data from drag-n-drop -->
+  <div id="fileData" data-type data-name data-size></div>
+</body>
+<script src=/js/uber.js></script>
+<script src=/js/h5v.js></script>
+</html>

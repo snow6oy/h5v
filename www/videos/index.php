@@ -1,5 +1,17 @@
 <?php
-$CONF='/opt/git/h5v';
+/* Load required lib files. */
+session_start();
+require_once('../twitteroauth/twitteroauth.php');
+require_once('../config.php');
+/* If access tokens are not available drop out. */
+if(empty($_SESSION['access_token']) 
+|| empty($_SESSION['access_token']['oauth_token']) 
+|| empty($_SESSION['access_token']['oauth_token_secret'])) {
+  header('Content-Type: application/json', TRUE, 401);
+  echo json_encode(array('error'=>'401 Unauthorized'));
+  exit;
+}
+/* still here? ok lets upload a video */
 $errorCodes=array( 
   0=>"There is no error, the file uploaded with success", 
   1=>"The uploaded file exceeds the upload_max_filesize directive in php.ini", 
@@ -8,15 +20,18 @@ $errorCodes=array(
   4=>"No file was uploaded",
   6=>"Missing a temporary folder"
 );
-if(isset($_FILES['myFile'])){
-  $error=$_FILES['myFile']['error'];
+/* hook Filename up to user_id */
+$upFilename=$_SESSION['access_token']['user_id'];
+$upFile=$_FILES[$upFilename];
+if(isset($upFile)){
+  $error=$upFile['error'];
   if($error){
     $data=array('error'=>$errorCodes[$error]);
     header('Content-Type: application/json', TRUE, 500);
   }else{
-    move_uploaded_file( $_FILES['myFile']['tmp_name'], $CONF. '/incoming/' . $_FILES['myFile']['name']);
-    $data=array('body'=>'Created','location'=>'/video/:id','error'=>$error);
-    header('Content-Type: application/json', TRUE, 201);
+    move_uploaded_file($upFile['tmp_name'], BASE_DIR. '/incoming/' . $upFile['name']);
+    $data=array('status'=>'Accepted');
+    header('Content-Type: application/json', TRUE, 202);
   }
 }else{
   $data=array('error'=>'unknown error');

@@ -5,16 +5,8 @@ function uber(url){
 //  this.items=["one","two"];
 //  var items;
   //this.tags=["title","artist","album","rating","trackNumber","producer","genre"];
-  this.create=function(form, responseHandler){ // either upload a new asset OR promote an existing asset
-    console.log("uploader called with "+ form.id);
-    /* refactor to use UPDATE code */
-    var payload={};
-    for(var i=0;i<form.length;i++){
-      elem=form.elements[i];
-      if(elem.type!="submit" && elem.type!="checkbox"){ // skip the controlling elements
-        payload[elem.id]=elem.value;
-      }
-    }
+  //this.create=function(form, responseHandler){ // either upload a new asset OR promote an existing asset
+  this.create=function(payload, responseHandler){ // either upload a new asset OR promote an existing asset
     var xhr=new XMLHttpRequest();
     xhr.open('POST', this.homeUrl);
     xhr.onreadystatechange=function(){
@@ -61,14 +53,7 @@ function uber(url){
     }
     xhr.send(null); // no payload
   };
-  this.update=function(form, responseHandler){ // replace metadata
-    var payload={};
-    for(var i=0;i<form.length;i++){
-      elem=form.elements[i];
-      if(elem.type!="submit" && elem.type!="checkbox"){ // skip the controlling elements
-        payload[elem.id]=elem.value;
-      }
-    }
+  this.update=function(payload, responseHandler){ // replace metadata
     var xhr=new XMLHttpRequest();
     xhr.open('PUT', this.homeUrl);
     xhr.onreadystatechange=function(){
@@ -80,6 +65,7 @@ function uber(url){
   };
   // delete means move item to archived folder
   this.delete=function(){};
+  
   function flattenItems(uber) {
     var label;
     var items=[];
