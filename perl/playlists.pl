@@ -31,10 +31,10 @@ if($url eq $listUrl){
       show_error(400, 'Zero length body');
     }elsif($ENV{REQUEST_METHOD} eq 'POST'){
       my $error=$h5v->create($j->decode($message));
-      ($error) ? show_error(500, $error) : print_response(201, {body=>'created'});
+      ($error) ? show_error(500, $error) : print_response(201, {status=>'Created'});
     }elsif($ENV{REQUEST_METHOD} eq 'PUT'){
       my $error=$h5v->update_metadata($j->decode($message));
-      ($error) ? show_error(500, $error) : print_response(200, {body=>'update ok'});      
+      ($error) ? show_error(500, $error) : print_response(200, {status=>'Success'});      
     }
   }else{
     show_error(405, $ENV{REQUEST_METHOD}. ' method not allowed');

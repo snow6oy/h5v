@@ -102,7 +102,8 @@ sub send_uber_list {
       {name=>'rating'}, $uber->{Rating},
       {name=>'trackNumber'}, $uber->{TrackNumber},
       {name=>'producer'}, $uber->{Producer},
-      {name=>'genre'}, $uber->{Genre}
+      {name=>'genre'}, $uber->{Genre},
+      {name=>'permissions'}, $uber->{Permissions}
     ]);
     # quick fix for m4v mime type
     # $c{data}->[3]=~s#video/x-m4v#video/mp4#g;
