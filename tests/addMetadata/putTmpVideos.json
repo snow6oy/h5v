@@ -1,0 +1,14 @@
+{ "template": 
+  { "data": 
+    [
+      {"name": "title", "value": "added using php tmp and put"},
+      {"name": "artist", "value": "evinha"},
+      {"name": "genre", "value": "Latin"},
+      {"name": "album", "value": "Oya"},
+      {"name": "track", "value": "13"},
+      {"name": "producer", "value": ""},
+      {"name": "rating", "value": "1"},
+      {"name": "scope", "value": "0"}
+    ]
+  }
+}

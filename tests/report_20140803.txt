@@ -1,0 +1,87 @@
+
+getHomepage/getHomeJson.sh
+*** RESPONSE ***
+501
+{"status":501,"message":"Not Implemented"}
+*** EXPECTED *** 
+501
+
+searchVideos/getRandomJson.sh
+*** RESPONSE ***
+200
+{"version" : "1.0","data" : [{"data" : [{
+*** EXPECTED *** 
+200
+
+./searchVideos/getPlaylistsJson.sh
+*** RESPONSE ***
+200
+*** EXPECTED ***
+200
+
+./getVideoItem.sh
+*** RESPONSE ***
+501
+*** EXPECTED ***
+501
+
+addMetadata/postVideosMp4.sh
+*** RESPONSE ***
+{
+    "status": 202,
+    "message": "Accepted: small.mp4 uploaded ok"
+}
+*** EXPECTED ***
+202
+
+addMetadata/create.pl
+*** RESPONSE ***
+$VAR1 = {
+          'source' => 'small.mp4',
+          'rating' => '-1',
+          'genre' => 'Dance',
+          'artist' => '',
+          'album' => '',
+          'tw_screen_name' => 'nature6oy',
+          'tw_id_str' => '449230816',
+          'producer' => '',
+          'title' => 'small by nature6oy',
+          'trackNumber' => '0'
+        };
+ok
+*** EXPECTED ***
+new file created as
+videos/anonDance[0000-9999].mp4
+
+addMetadata/postPlaylistsJson.sh
+*** RESPONSE ***
+{"messsage" : "Created", "status" : 201}
+*** EXPECTED *** 
+201
+
+addMetadata/postVideosJson.sh
+*** RESPONSE ***
+{"messsage":"Created","status":201}
+*** EXPECTED ***
+201
+
+updateMetadata/updateMetadata.pl
+*** RESPONSE ***
+ok
+ok
+trackNumber:Not an integer for XMP-xmpDM:TrackNumber
+Error opening file
+*** EXPECTED ***
+as above
+
+updateMetadata/putPlaylistsJson.sh
+*** RESPONSE *** 
+{"status" : 200,"message" : "Success"}
+*** EXPECTED ***
+200
+
+updateMetadata/putVideosJson.sh
+*** RESPONSE ***
+{"status" : 200,"message" : "Success"}
+*** EXPECTED *** 
+200

@@ -1,0 +1,15 @@
+{ "template": 
+  { "data": 
+    [
+      {"name": "title", "value": "new template"},
+      {"name": "artist", "value": "evinha"},
+      {"name": "genre", "value": "Latin"},
+      {"name": "album", "value": "Oya"},
+      {"name": "track", "value": "1"},
+      {"name": "producer", "value": ""},
+      {"name": "rating", "value": "4"},
+      {"name": "scope", "value": "2"},
+      {"name": "type", "value": ""} 
+    ]
+  }
+}
