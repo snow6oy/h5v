@@ -2,7 +2,7 @@
 <html lang=en>
   <head>
   <title>dishyzee | music video++</title>
-  <link rel=stylesheet type=text/css href=/h5v.css media=screen />
+  <link rel=stylesheet type=text/css href=/static/h5v.css media=screen />
 </head>
 <body lang=en>
   <a href="#lang">en</a>
@@ -10,7 +10,7 @@
   <input id="search" type=button class=button value=Search />
   <input id="upload" type=button class=button value=Upload />
   <?php 
-if(isset($content->{'screen_name'})){
+if(isset($_SESSION['status']) && $_SESSION['status']=='verified'){
     echo '<a href="/clearsessions.php"><img alt="photo of signed-in user" title="Sign out @'. 
     $content->{'screen_name'}.'" src="'. 
     $content->{'profile_image_url'}. '"/></a><div id="twitter_profile" data-id_str='. 
@@ -18,7 +18,7 @@ if(isset($content->{'screen_name'})){
     $content->{'name'}.  ' data-screen_name='. 
     $content->{'screen_name'}. '></div>'. "\n";  
 }else{
-  echo $content;
+  echo '<a href="/redirect.php"><img src="/static/lighter.png" alt="Sign in with Twitter"/></a>';
 }
 ?>
   <figure id="video_player"></figure>
@@ -63,6 +63,6 @@ if(isset($content->{'screen_name'})){
   <!-- remmber data from drag-n-drop -->
   <div id="fileData" data-type data-name data-size></div>
 </body>
-<script src=/js/uber.js></script>
-<script src=/js/h5v.js></script>
+<script src=/static/uber.js></script>
+<script src=/static/h5v.js></script>
 </html>

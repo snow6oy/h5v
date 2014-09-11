@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang=en>
+  <head>
+  <title>dishyzee | music video++</title>
+</head>
+<body lang=en>
+  <pre>
+  <?php 
+  // safer to check $_SESSION['status']=='verified'. see line 40: redirect.php
+// if(isset($content->{'screen_name'})){
+if(isset($_SESSION['status']) && $_SESSION['status']=='verified'){
+  echo '@'. $content->{'screen_name'}. 
+    '<a href="/clearsessions.php"><img alt="photo of signed-in user" title="sign out" src="'. 
+    $content->{'profile_image_url'}. '"/></a><div id="signedIn" data-id_str='. 
+    $content->{'id_str'}. ' data-name='. 
+    $content->{'name'}.  ' data-screen_name='. 
+    $content->{'screen_name'}. '></div>'. "\n";
+}else{
+  echo '<a href="/redirect.php"><img src="/static/lighter.png" alt="Sign in with Twitter"/></a>';
+}
+?>
+<h2>server content</h2>
+<?php 
+$postdata = file_get_contents("php://input");
+// only talk json
+echo 'REQUEST_METHOD:'. $_SERVER['REQUEST_METHOD']. "\n";
+echo 'HTTP_ACCEPT:'. $_SERVER['HTTP_ACCEPT']. "\n";
+echo 'REQUEST_URI:'. $_SERVER['REQUEST_URI']. "\n";
+echo 'QUERY_STRING:'. $_SERVER['QUERY_STRING']. "\n";
+echo 'POST_DATA:'. $postdata. "\n";
+?>
+
+
+<h2>twitter content</h2>
+<?php print_r($content); ?>
+  </pre>
+</body>
+</html>
