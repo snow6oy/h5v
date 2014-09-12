@@ -1,0 +1,349 @@
+Contents
+
+1.  Reading Json 
+1.1   Get Index
+1.2   Get Search results
+2.  Writing Json
+2.1   Upload a video as mp4
+2.2   Create video metadata
+2.3   Update video metadata
+3.  Error Handling
+3.1   Using a Get on /videos is not allowed
+3.2   Sending an invalid payload for an update
+
+1. Reading Json
+1.1 Get Index
+1.2 Get Search results
+
+*** REQUEST ***
+GET / HTTP/1.1
+Host: h5v.mingus.local
+Accept: application/json
+
+*** RESPONSE ***
+HTTP/1.1 200 OK
+Content-Type: application/vnd.collection+json; charset=utf8
+
+{"collection": {
+  "version": "1.0",
+  "href": "http://h5v.mingus.local/",
+  "items": [{"links": [[
+    {
+      "href": "http://h5v.mingus.local/",
+      "rel": "self",
+      "render": "link"
+    },
+    {
+      "href": "http://h5v.mingus.local/",
+      "rel": "index",
+      "prompt": "View Homepage",
+      "render": "link"
+    },
+    {
+      "href": "http://h5v.mingus.local/videos",
+      "rel": "upload",
+      "prompt": "Upload Video",
+      "render": "image"
+    },
+    {
+      "href": "http://h5v.mingus.local/videos",
+      "rel": "edit",
+      "prompt": "Create Video Metadata",
+      "render": "link"
+    },
+    {
+      "href": "http://h5v.mingus.local/videos/:id",
+      "rel": "item",
+      "prompt": "View Video",
+      "render": "image"
+    },
+    {
+      "href": "http://h5v.mingus.local/videos/:id",
+      "rel": "item",
+      "prompt": "View Video Page",
+      "render": "link"
+    },
+    {
+      "href": "http://h5v.mingus.local/videos/:id",
+      "rel": "edit",
+      "prompt": "Edit Video Metadata",
+      "render": "link"
+    },
+    {
+      "href": "http://h5v.mingus.local/videos/:id",
+      "rel": "delete",
+      "prompt": "Remove Video From View",
+      "render": "link"
+    },
+    {
+      "href": "http://h5v.mingus.local/captions/:id",
+      "rel": "caption",
+      "prompt": "View Video Caption",
+      "render": "image"
+    }
+  ]]}],
+  "template": [{"data": [[
+    { "name": "title",    "prompt": "Track Title"},
+    { "name": "artist",   "prompt": "Artist"},
+    { "name": "genre",    "prompt": "Genre"},
+    { "name": "album",    "prompt": "Album"},
+    { "name": "track",    "prompt": "Track#"},
+    { "name": "producer", "prompt": "Producer"},
+    { "name": "rating",   "prompt": "Rating"},
+    { "name": "scope",    "prompt": "Shared With"},
+    { "name": "type"}
+  ]]}],
+  "queries": [{
+    "href": "http://h5v.mingus.local/search",
+    "rel": "search",
+    "prompt": "Enter search term or empty for random",
+    "data": [{
+      "name": "term",
+      "value": ""
+    }]
+  }]
+}}
+
+*** REQUEST ***
+GET /index.php/search?term=a HTTP/1.1
+Host: h5v.mingus.local
+Accept: application/json
+
+*** RESPONSE ***
+HTTP/1.1 200 OK
+Content-Type: application/vnd.collection+json; charset=utf8
+
+{"collection": {
+  "version": "1.0",
+  "href": "http://h5v.mingus.local/",
+  "items": [
+    {
+      "href": "http://h5v.mingus.local/videos/evinhaLatin0025.mp4",
+      "data": [
+        {
+          "name": "type",
+          "value": "video/mp4",
+          "prompt": null
+        },
+        {
+          "name": "album",
+          "value": "",
+          "prompt": "Album"
+        },
+        {
+          "name": "genre",
+          "value": "Latin",
+          "prompt": "Genre"
+        },
+        {
+          "name": "track",
+          "value": "5",
+          "prompt": "Track#"
+        },
+        {
+          "name": "rating",
+          "value": "1",
+          "prompt": "Rating"
+        },
+        {
+          "name": "artist",
+          "value": "evinha",
+          "prompt": "Artist"
+        },
+        {
+          "name": "title",
+          "value": "Test add meta after upload",
+          "prompt": "Track Title"
+        },
+        {
+          "name": "producer",
+          "value": "",
+          "prompt": "Producer"
+        },
+        {
+          "name": "scope",
+          "value": "2",
+          "prompt": "Shared With"
+        }
+      ],
+      "links": [{
+        "rel": "caption",
+        "href": "http://h5v.mingus.local/captions/video-placeholder.png",
+        "prompt": "Video Placeholder",
+        "render": "image"
+      }]
+    },
+    {
+      "href": "http://h5v.mingus.local/videos/anonDance0002.mp4",
+      "data": [ ... ],
+      "links": [ ... ]
+    },
+  "template": [ ... ],
+  "queries": [ ... ]
+}}
+
+2.  Writing Json
+2.1 Upload a video as mp4
+
+*** REQUEST ***
+POST /index.php/videos/ HTTP/1.1
+Host: h5v.mingus.local
+Accept: video/mp4
+Content-Length: 387547
+Expect: 100-continue
+Content-Type: multipart/form-data; boundary=----------------------------77c3ff13f9d5
+
+[ more content < 2MB ]
+
+*** RESPONSE ***
+HTTP/1.1 100 Continue
+HTTP/1.1 202 Accepted
+Content-Type: application/vnd.collection+json; charset=utf8
+
+{"collection": {
+  "version": "1.0",
+  "href": "http://h5v.mingus.local/",
+  "items": {
+    "href": "http://h5v.mingus.local/449230816",
+    "data": [{
+      "status": 202,
+      "title": "Accepted",
+      "message": "small.mp4 uploaded ok. Add metadata to create resource"
+    }]
+  },
+  "template": [ ... ],
+  "queries": [ ... ]
+}}
+
+2.2 Create video metadata
+
+*** REQUEST ***
+POST /index.php/videos/ HTTP/1.1
+Host: h5v.mingus.local
+Accept: application/json
+Content-Length: 433
+Content-Type: application/x-www-form-urlencoded
+
+{ "template": 
+  { "data": 
+    [
+      {"name": "title", "value": "new video added today"},
+      {"name": "artist", "value": "evinha"},
+      {"name": "genre", "value": "Latin"},
+      {"name": "album", "value": "Oya"},
+      {"name": "track", "value": "13"},
+      {"name": "producer", "value": ""},
+      {"name": "rating", "value": "1"},
+      {"name": "scope", "value": "0"},
+      {"name": "source", "value": "evinha.mp4"}      
+    ]
+  }
+}
+
+*** RESPONSE ***
+HTTP/1.1 201 Created
+Location: http://h5v.mingus.local/videos/evinhaOya0011.mp4
+Content-Type: text/html
+
+[ no content ]
+
+2.3 Update video metadata
+
+*** REQUEST ***
+PUT /index.php/videos/geniusTo0000.mp4 HTTP/1.1
+Host: h5v.mingus.local
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+{ "template": 
+  { "data": 
+    [
+      {"name": "title", "value": "new template"},
+      {"name": "artist", "value": "evinha"},
+      {"name": "genre", "value": "Latin"},
+      {"name": "album", "value": "Oya"},
+      {"name": "track", "value": "1"},
+      {"name": "producer", "value": ""},
+      {"name": "rating", "value": "4"},
+      {"name": "scope", "value": "2"},
+      {"name": "type", "value": ""} 
+    ]
+  }
+}
+
+*** RESPONSE ***
+HTTP/1.1 200 OK
+Content-Type: application/vnd.collection+json; charset=utf8
+
+{"collection": {
+  "version": "1.0",
+  "href": "http://h5v.mingus.local/",
+  "items": {
+    "href": "http://h5v.mingus.local/videos/geniusTo0000.mp4",
+    "data": [{
+      "status": 200,
+      "title": "OK",
+      "message": "Update successful"
+    }]
+  },
+  "template": [ ... ],
+  "queries": [ ... ]
+  }]
+}}
+
+3. Error Handling
+
+3.1 Using a Get on /videos is not allowed
+
+*** REQUEST ***
+GET /index.php/videos/evinhaLego0000 HTTP/1.1
+Host: h5v.mingus.local
+Accept: video/mp4
+
+*** RESPONSE ***
+HTTP/1.1 501 Method Not Implemented
+Content-Type: application/vnd.collection+json; charset=utf8
+
+{"collection": {
+  "version": "1.0",
+  "href": "http://h5v.mingus.local/",
+  "error": {
+    "title": "Not Implemented",
+    "code": 501,
+    "message": ""
+  }
+}}
+
+3.2 Sending an invalid payload for an update
+
+*** REQUEST ***
+PUT /index.php/videos/borisLegoCollection0003 HTTP/1.1
+Host: h5v.mingus.local
+Accept: application/json
+Content-Type: application/x-www-form-urlencoded
+
+{
+  "title":"test",
+  "artist":"Miles Davis",
+  "genre":"Alternative",
+  "album":"Kind of Blue",
+  "producer":"Teo Macero",
+  "rating":"1",
+  "trackNumber":"4",
+  "source":"blue.mp4",
+  "permissions":"2"
+}
+
+*** RESPONSE ***
+HTTP/1.1 400 Bad Request
+Content-Type: application/vnd.collection+json; charset=utf8
+
+{"collection": {
+  "version": "1.0",
+  "href": "http://h5v.mingus.local/",
+  "error": {
+    "title": "Bad Request",
+    "code": 400,
+    "message": "Incoming payload has unknown format"
+  }
+}}
